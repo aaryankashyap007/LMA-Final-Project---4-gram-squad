@@ -1,0 +1,4 @@
+seeds: [13, 42, 2026]
+labels: [EMERGENCY, URGENT, ROUTINE, INSUFFICIENT]
+scripts: [en, deva, hinglish]
+splits: {train: 0.6, dev: 0.15, test: 0.25}
