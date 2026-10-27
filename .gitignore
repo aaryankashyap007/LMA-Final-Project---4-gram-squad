@@ -1,9 +1,39 @@
+# --- python ---
 __pycache__/
-*.pyc
+*.py[cod]
 .venv/
+venv/
+*.egg-info/
+.pytest_cache/
 .ipynb_checkpoints/
-outputs/raw/
+
+# --- secrets / env ---
+.env
+*.key
+kaggle.json
+
+# --- big model artifacts (never commit) ---
 *.safetensors
 *.bin
 *.pt
-.env
+*.pth
+*.gguf
+*.ckpt
+adapters/
+checkpoints/
+wandb/
+
+# --- raw Kaggle downloads (keep only small results) ---
+outputs/raw/*
+!outputs/raw/.gitkeep
+
+# --- Kaggle upload bundles ---
+*.zip
+kaggle_bundle/
+
+# --- editor / OS ---
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*~

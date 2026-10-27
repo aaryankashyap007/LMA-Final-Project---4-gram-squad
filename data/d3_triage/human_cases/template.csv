@@ -1,0 +1,3 @@
+case_id,category,label,age,sex,cues,en,deva,hinglish,pair_id,notes,a2_present_en,a2_present_deva,a2_present_hinglish,a2_extra
+EX001,heart_brain,EMERGENCY,58,M,chest_pain;sweating;pain_left_arm,"My father has chest pain with sweating and his left arm hurts.","मेरे पिताजी को सीने में दर्द है, पसीना आ रहा है और बाएं हाथ में दर्द है।","mere pitaji ko seene mein dard hai, paseena aa raha hai aur baye haath mein bhi dard hai",EX-P1,example row - delete,,,,
+EX002,heart_brain,ROUTINE,25,M,chest_pain;pain_on_pressing_chest_wall;after_gym,"I have chest pain when I press my chest wall since I lifted weights.","जिम में वज़न उठाने के बाद छाती दबाने पर दर्द होता है।","gym mein weight uthane ke baad chhati dabane pe dard hota hai",EX-P1,example row - delete,,,,
