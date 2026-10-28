@@ -1,5 +1,6 @@
-"""Validate human-written D3 CSVs; optionally export dev/test jsonl.
+"""Validate the human-written D3 EVAL set (d3_cases.csv); optionally export dev/test jsonl.
 Run from repo root:  python scripts/validate_d3.py [--export]
+(Training data is handled by scripts/prepare_train.py.)
 """
 import sys
 from collections import Counter
@@ -11,15 +12,12 @@ from swasthya import d3  # noqa: E402
 
 
 def main():
-    files = sorted(p for p in (ROOT / "data/d3_triage/human_cases").glob("*.csv") if p.name != "template.csv")
-    if not files:
-        print("No CSVs found in data/d3_triage/human_cases/ (template.csv is ignored)")
+    f = ROOT / "data/d3_triage/human_cases/d3_cases.csv"
+    if not f.exists():
+        print("Missing", f)
         return 1
-    rows = []
-    for f in files:
-        r = d3.load_csv(f)
-        print(f"{f.name}: {len(r)} cases")
-        rows += r
+    rows = d3.load_csv(f)
+    print(f"{f.name}: {len(rows)} cases")
     errors, warnings = d3.validate_rows(rows)
     for w in warnings:
         print("WARN ", w)
