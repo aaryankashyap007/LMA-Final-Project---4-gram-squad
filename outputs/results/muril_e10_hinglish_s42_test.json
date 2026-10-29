@@ -71,9 +71,9 @@
   },
   "cross_script_recall_gap": 0.19047619047619047,
   "emergency_recall_by_script": {
-    "hinglish": 0.8095238095238095,
+    "deva": 0.6904761904761905,
     "en": 0.6190476190476191,
-    "deva": 0.6904761904761905
+    "hinglish": 0.8095238095238095
   },
   "minimal_pairs": {
     "en": {
