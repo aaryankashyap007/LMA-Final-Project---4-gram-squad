@@ -1,0 +1,95 @@
+{
+  "overall": {
+    "n": 135,
+    "n_emergency": 54,
+    "emergency_recall": 1.0,
+    "emergency_recall_ci": [
+      1.0,
+      1.0
+    ],
+    "over_triage": 0.8888888888888888,
+    "under_triage": 0.010752688172043012,
+    "macro_f1": 0.2409090909090909,
+    "macro_f1_ci": [
+      0.14699197860962568,
+      0.3377592158973086
+    ],
+    "ece": 0.1461780779891544
+  },
+  "by_script": {
+    "en": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.9629629629629629,
+      "under_triage": 0.0,
+      "macro_f1": 0.2007168458781362,
+      "macro_f1_ci": [
+        0.11847969023962596,
+        0.2944776119402986
+      ],
+      "ece": 0.13066451748212177
+    },
+    "deva": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.8518518518518519,
+      "under_triage": 0.03225806451612903,
+      "macro_f1": 0.23587570621468928,
+      "macro_f1_ci": [
+        0.1332894736842105,
+        0.3279746593437152
+      ],
+      "ece": 0.1421397712495592
+    },
+    "hinglish": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.8518518518518519,
+      "under_triage": 0.0,
+      "macro_f1": 0.27754237288135597,
+      "macro_f1_ci": [
+        0.16140625,
+        0.3650293255131965
+      ],
+      "ece": 0.16572994523578216
+    }
+  },
+  "cross_script_recall_gap": 0.0,
+  "emergency_recall_by_script": {
+    "deva": 1.0,
+    "en": 1.0,
+    "hinglish": 1.0
+  },
+  "minimal_pairs": {
+    "en": {
+      "n_pairs": 7,
+      "flip_acc": 0.0,
+      "both_correct": 0.0
+    },
+    "deva": {
+      "n_pairs": 7,
+      "flip_acc": 0.14285714285714285,
+      "both_correct": 0.0
+    },
+    "hinglish": {
+      "n_pairs": 7,
+      "flip_acc": 0.2857142857142857,
+      "both_correct": 0.14285714285714285
+    }
+  }
+}

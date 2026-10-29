@@ -1,0 +1,14 @@
+{
+  "system": "smoke_muril",
+  "model": "google/muril-base-cased",
+  "train_scripts": "all",
+  "seed": 13,
+  "epochs": 1,
+  "lr": 3e-05,
+  "bs": 16,
+  "max_len": 128,
+  "emerg_weight": 1.0,
+  "n_train": 32,
+  "shots": 0,
+  "seconds": 2.9
+}

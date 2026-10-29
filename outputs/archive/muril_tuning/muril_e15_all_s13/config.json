@@ -1,0 +1,14 @@
+{
+  "system": "muril_e15",
+  "model": "google/muril-base-cased",
+  "train_scripts": "all",
+  "seed": 13,
+  "epochs": 15,
+  "lr": 5e-05,
+  "bs": 8,
+  "max_len": 128,
+  "emerg_weight": 1.0,
+  "n_train": 900,
+  "shots": 0,
+  "seconds": 234.2
+}

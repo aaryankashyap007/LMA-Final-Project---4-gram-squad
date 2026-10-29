@@ -1,0 +1,95 @@
+{
+  "overall": {
+    "n": 135,
+    "n_emergency": 54,
+    "emergency_recall": 0.9814814814814815,
+    "emergency_recall_ci": [
+      0.9375,
+      1.0
+    ],
+    "over_triage": 0.8024691358024691,
+    "under_triage": 0.010752688172043012,
+    "macro_f1": 0.38013037350246653,
+    "macro_f1_ci": [
+      0.22626973081742818,
+      0.4945938444937008
+    ],
+    "ece": 0.11174342632293702
+  },
+  "by_script": {
+    "en": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.7777777777777778,
+      "under_triage": 0.0,
+      "macro_f1": 0.37380382775119614,
+      "macro_f1_ci": [
+        0.20061128526645766,
+        0.5114226827094474
+      ],
+      "ece": 0.14883208208613927
+    },
+    "deva": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.8518518518518519,
+      "under_triage": 0.0,
+      "macro_f1": 0.3148800352190183,
+      "macro_f1_ci": [
+        0.15618990384615386,
+        0.4664247881355932
+      ],
+      "ece": 0.14263915419578552
+    },
+    "hinglish": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 0.9444444444444444,
+      "emergency_recall_ci": [
+        0.8125,
+        1.0
+      ],
+      "over_triage": 0.7777777777777778,
+      "under_triage": 0.03225806451612903,
+      "macro_f1": 0.4381493506493507,
+      "macro_f1_ci": [
+        0.2499905303030303,
+        0.563504673001577
+      ],
+      "ece": 0.09882267713546752
+    }
+  },
+  "cross_script_recall_gap": 0.05555555555555558,
+  "emergency_recall_by_script": {
+    "hinglish": 0.9444444444444444,
+    "en": 1.0,
+    "deva": 1.0
+  },
+  "minimal_pairs": {
+    "en": {
+      "n_pairs": 7,
+      "flip_acc": 0.14285714285714285,
+      "both_correct": 0.14285714285714285
+    },
+    "deva": {
+      "n_pairs": 7,
+      "flip_acc": 0.14285714285714285,
+      "both_correct": 0.0
+    },
+    "hinglish": {
+      "n_pairs": 7,
+      "flip_acc": 0.2857142857142857,
+      "both_correct": 0.14285714285714285
+    }
+  }
+}

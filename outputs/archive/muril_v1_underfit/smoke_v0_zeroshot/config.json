@@ -1,0 +1,10 @@
+{
+  "system": "smoke_v0_zeroshot",
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "train_scripts": "-",
+  "seed": "-",
+  "shots": 0,
+  "shot_ids": [],
+  "bits": 4,
+  "seconds": 3.6
+}

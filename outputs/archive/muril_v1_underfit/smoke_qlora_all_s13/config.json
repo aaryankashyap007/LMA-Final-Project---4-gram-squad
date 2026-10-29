@@ -1,0 +1,16 @@
+{
+  "system": "smoke_qlora",
+  "model": "Qwen/Qwen2.5-3B-Instruct",
+  "train_scripts": "all",
+  "seed": 13,
+  "epochs": 1,
+  "lr": 0.0002,
+  "bs": 4,
+  "accum": 4,
+  "lora_r": 16,
+  "emerg_weight": 1.0,
+  "n_train": 16,
+  "shots": 0,
+  "bits": 4,
+  "seconds": 15.4
+}

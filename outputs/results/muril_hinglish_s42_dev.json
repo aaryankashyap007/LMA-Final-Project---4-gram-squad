@@ -1,0 +1,95 @@
+{
+  "overall": {
+    "n": 135,
+    "n_emergency": 54,
+    "emergency_recall": 1.0,
+    "emergency_recall_ci": [
+      1.0,
+      1.0
+    ],
+    "over_triage": 1.0,
+    "under_triage": 0.0,
+    "macro_f1": 0.14285714285714285,
+    "macro_f1_ci": [
+      0.10526315789473684,
+      0.1786846076458753
+    ],
+    "ece": 0.11485770101900451
+  },
+  "by_script": {
+    "en": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 1.0,
+      "under_triage": 0.0,
+      "macro_f1": 0.14285714285714285,
+      "macro_f1_ci": [
+        0.10526315789473684,
+        0.1786846076458753
+      ],
+      "ece": 0.12309746146202089
+    },
+    "deva": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 1.0,
+      "under_triage": 0.0,
+      "macro_f1": 0.14285714285714285,
+      "macro_f1_ci": [
+        0.10526315789473684,
+        0.1786846076458753
+      ],
+      "ece": 0.12062895364231534
+    },
+    "hinglish": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 1.0,
+      "under_triage": 0.0,
+      "macro_f1": 0.14285714285714285,
+      "macro_f1_ci": [
+        0.10526315789473684,
+        0.1786846076458753
+      ],
+      "ece": 0.16485079261991714
+    }
+  },
+  "cross_script_recall_gap": 0.0,
+  "emergency_recall_by_script": {
+    "deva": 1.0,
+    "en": 1.0,
+    "hinglish": 1.0
+  },
+  "minimal_pairs": {
+    "en": {
+      "n_pairs": 7,
+      "flip_acc": 0.0,
+      "both_correct": 0.0
+    },
+    "deva": {
+      "n_pairs": 7,
+      "flip_acc": 0.0,
+      "both_correct": 0.0
+    },
+    "hinglish": {
+      "n_pairs": 7,
+      "flip_acc": 0.0,
+      "both_correct": 0.0
+    }
+  }
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 1.3818133862813313,
+    "dev_emergency_recall": 1.0
+  },
+  {
+    "epoch": 2,
+    "train_loss": 1.3547850163777668,
+    "dev_emergency_recall": 1.0
+  },
+  {
+    "epoch": 3,
+    "train_loss": 1.320792628924052,
+    "dev_emergency_recall": 1.0
+  },
+  {
+    "epoch": 4,
+    "train_loss": 1.2964320770899456,
+    "dev_emergency_recall": 1.0
+  },
+  {
+    "epoch": 5,
+    "train_loss": 1.2822379446029664,
+    "dev_emergency_recall": 1.0
+  }
+]

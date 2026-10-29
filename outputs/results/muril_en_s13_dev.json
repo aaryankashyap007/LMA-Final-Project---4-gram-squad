@@ -1,0 +1,95 @@
+{
+  "overall": {
+    "n": 135,
+    "n_emergency": 54,
+    "emergency_recall": 1.0,
+    "emergency_recall_ci": [
+      1.0,
+      1.0
+    ],
+    "over_triage": 0.8765432098765432,
+    "under_triage": 0.0,
+    "macro_f1": 0.2684850476503451,
+    "macro_f1_ci": [
+      0.155344297762099,
+      0.3565393467154877
+    ],
+    "ece": 0.16164437112984834
+  },
+  "by_script": {
+    "en": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.8518518518518519,
+      "under_triage": 0.0,
+      "macro_f1": 0.27754237288135597,
+      "macro_f1_ci": [
+        0.16140625,
+        0.3650293255131965
+      ],
+      "ece": 0.1690149876806471
+    },
+    "deva": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.8888888888888888,
+      "under_triage": 0.0,
+      "macro_f1": 0.2409090909090909,
+      "macro_f1_ci": [
+        0.13114754098360656,
+        0.34530279503105593
+      ],
+      "ece": 0.14696124527189464
+    },
+    "hinglish": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.8888888888888888,
+      "under_triage": 0.0,
+      "macro_f1": 0.2863636363636364,
+      "macro_f1_ci": [
+        0.1589597902097902,
+        0.37870174632352943
+      ],
+      "ece": 0.16895688043700324
+    }
+  },
+  "cross_script_recall_gap": 0.0,
+  "emergency_recall_by_script": {
+    "deva": 1.0,
+    "en": 1.0,
+    "hinglish": 1.0
+  },
+  "minimal_pairs": {
+    "en": {
+      "n_pairs": 7,
+      "flip_acc": 0.2857142857142857,
+      "both_correct": 0.14285714285714285
+    },
+    "deva": {
+      "n_pairs": 7,
+      "flip_acc": 0.14285714285714285,
+      "both_correct": 0.0
+    },
+    "hinglish": {
+      "n_pairs": 7,
+      "flip_acc": 0.2857142857142857,
+      "both_correct": 0.14285714285714285
+    }
+  }
+}

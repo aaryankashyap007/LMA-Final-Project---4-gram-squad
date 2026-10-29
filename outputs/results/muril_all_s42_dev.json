@@ -1,0 +1,95 @@
+{
+  "overall": {
+    "n": 135,
+    "n_emergency": 54,
+    "emergency_recall": 0.9259259259259259,
+    "emergency_recall_ci": [
+      0.8148148148148148,
+      1.0
+    ],
+    "over_triage": 0.6049382716049383,
+    "under_triage": 0.043010752688172046,
+    "macro_f1": 0.5309779220918145,
+    "macro_f1_ci": [
+      0.3639015193755905,
+      0.6326865611258117
+    ],
+    "ece": 0.22160075306892396
+  },
+  "by_script": {
+    "en": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 0.8888888888888888,
+      "emergency_recall_ci": [
+        0.7222222222222222,
+        1.0
+      ],
+      "over_triage": 0.5925925925925926,
+      "under_triage": 0.06451612903225806,
+      "macro_f1": 0.47944444444444445,
+      "macro_f1_ci": [
+        0.31181365783339465,
+        0.6281250343935726
+      ],
+      "ece": 0.14314276774724324
+    },
+    "deva": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.6296296296296297,
+      "under_triage": 0.0,
+      "macro_f1": 0.5656446540880503,
+      "macro_f1_ci": [
+        0.39168072016198685,
+        0.6938795978917883
+      ],
+      "ece": 0.2717761894067129
+    },
+    "hinglish": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 0.8888888888888888,
+      "emergency_recall_ci": [
+        0.7222222222222222,
+        1.0
+      ],
+      "over_triage": 0.5925925925925926,
+      "under_triage": 0.06451612903225806,
+      "macro_f1": 0.5346498599439776,
+      "macro_f1_ci": [
+        0.35125348297213627,
+        0.6463494152046784
+      ],
+      "ece": 0.24988330205281575
+    }
+  },
+  "cross_script_recall_gap": 0.11111111111111116,
+  "emergency_recall_by_script": {
+    "deva": 1.0,
+    "en": 0.8888888888888888,
+    "hinglish": 0.8888888888888888
+  },
+  "minimal_pairs": {
+    "en": {
+      "n_pairs": 7,
+      "flip_acc": 0.42857142857142855,
+      "both_correct": 0.14285714285714285
+    },
+    "deva": {
+      "n_pairs": 7,
+      "flip_acc": 0.14285714285714285,
+      "both_correct": 0.0
+    },
+    "hinglish": {
+      "n_pairs": 7,
+      "flip_acc": 0.42857142857142855,
+      "both_correct": 0.14285714285714285
+    }
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "overall": {
+    "n": 135,
+    "n_emergency": 54,
+    "emergency_recall": 1.0,
+    "emergency_recall_ci": [
+      1.0,
+      1.0
+    ],
+    "over_triage": 0.9382716049382716,
+    "under_triage": 0.0,
+    "macro_f1": 0.23294602698650677,
+    "macro_f1_ci": [
+      0.13267753245522598,
+      0.3088757965933051
+    ],
+    "ece": 0.14132065971692404
+  },
+  "by_script": {
+    "en": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.8888888888888888,
+      "under_triage": 0.0,
+      "macro_f1": 0.2863636363636364,
+      "macro_f1_ci": [
+        0.13694804336329983,
+        0.36961029789419625
+      ],
+      "ece": 0.16989508072535198
+    },
+    "deva": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.9629629629629629,
+      "under_triage": 0.0,
+      "macro_f1": 0.2007168458781362,
+      "macro_f1_ci": [
+        0.11847969023962596,
+        0.2944776119402986
+      ],
+      "ece": 0.12796239587995742
+    },
+    "hinglish": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.9629629629629629,
+      "under_triage": 0.0,
+      "macro_f1": 0.2007168458781362,
+      "macro_f1_ci": [
+        0.11206896551724138,
+        0.31209020146520144
+      ],
+      "ece": 0.1261045025454627
+    }
+  },
+  "cross_script_recall_gap": 0.0,
+  "emergency_recall_by_script": {
+    "deva": 1.0,
+    "en": 1.0,
+    "hinglish": 1.0
+  },
+  "minimal_pairs": {
+    "en": {
+      "n_pairs": 7,
+      "flip_acc": 0.14285714285714285,
+      "both_correct": 0.0
+    },
+    "deva": {
+      "n_pairs": 7,
+      "flip_acc": 0.0,
+      "both_correct": 0.0
+    },
+    "hinglish": {
+      "n_pairs": 7,
+      "flip_acc": 0.14285714285714285,
+      "both_correct": 0.0
+    }
+  }
+}

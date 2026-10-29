@@ -1,0 +1,8 @@
+[
+  {
+    "epoch": 1,
+    "train_loss": 0.11953929299488619,
+    "dev_emergency_recall": 0.8888888888888888,
+    "elapsed_s": 11
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "system": "muril",
+  "model": "google/muril-base-cased",
+  "train_scripts": "deva",
+  "seed": 13,
+  "epochs": 5,
+  "lr": 3e-05,
+  "bs": 16,
+  "max_len": 128,
+  "emerg_weight": 1.0,
+  "n_train": 300,
+  "shots": 0,
+  "seconds": 14.2
+}

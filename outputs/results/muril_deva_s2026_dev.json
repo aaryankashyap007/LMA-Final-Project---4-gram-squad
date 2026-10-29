@@ -1,0 +1,95 @@
+{
+  "overall": {
+    "n": 135,
+    "n_emergency": 54,
+    "emergency_recall": 1.0,
+    "emergency_recall_ci": [
+      1.0,
+      1.0
+    ],
+    "over_triage": 0.7777777777777778,
+    "under_triage": 0.043010752688172046,
+    "macro_f1": 0.3007518796992481,
+    "macro_f1_ci": [
+      0.2115617563832847,
+      0.3666739039240396
+    ],
+    "ece": 0.20131208852485372
+  },
+  "by_script": {
+    "en": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.8518518518518519,
+      "under_triage": 0.0,
+      "macro_f1": 0.3192090395480226,
+      "macro_f1_ci": [
+        0.2076284882232463,
+        0.3914367816091955
+      ],
+      "ece": 0.2060159100426568
+    },
+    "deva": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.8148148148148148,
+      "under_triage": 0.0,
+      "macro_f1": 0.3090185676392573,
+      "macro_f1_ci": [
+        0.18942294973544974,
+        0.385928651266766
+      ],
+      "ece": 0.19068039721912808
+    },
+    "hinglish": {
+      "n": 45,
+      "n_emergency": 18,
+      "emergency_recall": 1.0,
+      "emergency_recall_ci": [
+        1.0,
+        1.0
+      ],
+      "over_triage": 0.6666666666666666,
+      "under_triage": 0.12903225806451613,
+      "macro_f1": 0.28431372549019607,
+      "macro_f1_ci": [
+        0.1773956356736243,
+        0.36505347054075865
+      ],
+      "ece": 0.2072399583127763
+    }
+  },
+  "cross_script_recall_gap": 0.0,
+  "emergency_recall_by_script": {
+    "deva": 1.0,
+    "en": 1.0,
+    "hinglish": 1.0
+  },
+  "minimal_pairs": {
+    "en": {
+      "n_pairs": 7,
+      "flip_acc": 0.2857142857142857,
+      "both_correct": 0.14285714285714285
+    },
+    "deva": {
+      "n_pairs": 7,
+      "flip_acc": 0.14285714285714285,
+      "both_correct": 0.0
+    },
+    "hinglish": {
+      "n_pairs": 7,
+      "flip_acc": 0.42857142857142855,
+      "both_correct": 0.14285714285714285
+    }
+  }
+}
