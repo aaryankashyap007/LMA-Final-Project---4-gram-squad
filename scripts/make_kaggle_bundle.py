@@ -43,7 +43,6 @@ def main():
                 z.write(f, f.relative_to(out))
     print("bundle folder:", out.relative_to(ROOT))
     print("bundle zip   :", zp.relative_to(ROOT), f"({zp.stat().st_size / 1e3:.0f} KB)")
-    print("Upload either one as a Kaggle Dataset named swasthya-data (see docs/KAGGLE_RUNBOOK.md).")
     return 0
 
 

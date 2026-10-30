@@ -50,3 +50,11 @@ report/*.synctex.gz
 Thumbs.db
 *.swp
 *~
+
+# One-off helper scripts (not part of the project)
+scripts/bootstrap/
+scripts/strip_hints.py
+scripts/fix_parity_rows.py
+scripts/parity_fails.py
+
+scripts/make_kaggle_bundle.py

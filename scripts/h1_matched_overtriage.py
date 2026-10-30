@@ -130,9 +130,7 @@ def main():
         w = csv.DictWriter(f, fieldnames=list(diffs[0].keys()))
         w.writeheader()
         w.writerows(diffs)
-    print("\n(all alphas for the paired differences are in outputs/results/h1_paired_diffs.csv)")
     print("saved outputs/results/h1_matched_overtriage.csv")
-    print("Note: the CI reflects which test cases were sampled, not training-seed variation.")
 
 
 if __name__ == "__main__":
