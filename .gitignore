@@ -1,39 +1,52 @@
-# --- python ---
+# Python
 __pycache__/
 *.py[cod]
-.venv/
-venv/
 *.egg-info/
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
 .ipynb_checkpoints/
-
-# --- secrets / env ---
+strip_hints.py
+# Secrets and local config
 .env
 *.key
 kaggle.json
 
-# --- big model artifacts (never commit) ---
+# Model weights and training artifacts (never commit)
 *.safetensors
 *.bin
 *.pt
 *.pth
 *.gguf
 *.ckpt
+adapter/
 adapters/
 checkpoints/
 wandb/
 
-# --- raw Kaggle downloads (keep only small results) ---
+# Kaggle uploads and downloads
+kaggle_bundle/
+*.zip
 outputs/raw/*
 !outputs/raw/.gitkeep
 
-# --- Kaggle upload bundles ---
-*.zip
-kaggle_bundle/
+# LaTeX build files (keep .tex and .pdf)
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc
+report/*.bbl
+report/*.blg
+report/*.fls
+report/*.fdb_latexmk
+report/*.synctex.gz
 
-# --- editor / OS ---
+# Editor / OS
 .vscode/
 .idea/
 .DS_Store
+Thumbs.db
 *.swp
 *~

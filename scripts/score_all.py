@@ -24,8 +24,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--boot", type=int, default=1000)
     ap.add_argument("--raw", default="outputs/raw")
+    ap.add_argument("--splits", nargs="+", default=["dev", "test"])
     a = ap.parse_args()
-    gold = {s: ev.load_jsonl(ROOT / f"data/d3_triage/rendered/d3_{s}.jsonl") for s in ("dev", "test")}
+    gold = {s: ev.load_jsonl(ROOT / f"data/d3_triage/rendered/d3_{s}.jsonl") for s in a.splits}
     jobs = []
     for sp, g in gold.items():
         jobs.append(("b0_keyword", {"system": "keyword", "train_scripts": "-", "seed": "-", "shots": "-"}, sp,
