@@ -1,3 +1,4 @@
 # Experiment log
 | ID | Date | What | Config | Dataset ver. | Result file | Notes |
 |----|------|------|--------|--------------|-------------|-------|
+| G1-s13-adapter | 2026-11-13 | QLoRA gate retrained to save the adapter (original G1 seed-13 run had no adapter saved) | Qwen2.5-3B-Instruct, 4-bit, rank 16, 3 epochs, lr 2e-4, batch 4 x accum 4, seed 13, all scripts, `--save_adapter` | D3 train 300 cases, eval 150 cases (dev 45 / test 105) | `outputs/results/qlora_adapter_all_s13_test.json` | Test: emergency recall 0.913, over-triage 0.095, macro-F1 0.830. Within seed noise of earlier seed-13 runs (0.810 / 0.850 macro-F1). Adapter kept in private Kaggle dataset `g1-adapter-s13`. Used as the gate in the agent experiments. |
