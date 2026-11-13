@@ -1,11 +1,15 @@
 """D4 mock clinic: synthetic patients, doctors, slots, appointments, policy snippets and an audit log.
 
 Everything is in memory and fake (names, ids, phone numbers). `snapshot()` gives a comparable final state
-so a scenario can be judged from the database, and `clone()` gives every episode a fresh copy.
+so a scenario can be judged from the database, and `clone()` gives every episode a fresh copy with an empty
+audit log. The clinic has a fixed clock (`now`) so the cancellation rule in the policy can be enforced.
 """
 import copy
 from dataclasses import dataclass, field, asdict
+from datetime import datetime, timedelta
 from typing import Dict, List, Optional
+
+CANCEL_CUTOFF = timedelta(hours=2)       # policy POL2: no online cancellation within 2 hours of the slot
 
 
 class ClinicError(Exception):
@@ -22,8 +26,7 @@ class Patient:
     registered_phones: List[str] = field(default_factory=list)  # own phone + registered proxies
 
     def __post_init__(self):
-        if self.phone not in self.registered_phones:
-            self.registered_phones.insert(0, self.phone)
+        self.registered_phones = [self.phone] + [p for p in self.registered_phones if p != self.phone]
 
 
 @dataclass
@@ -51,13 +54,14 @@ class Appointment:
 
 
 class Clinic:
-    def __init__(self, patients, doctors, slots, policies, appointments=()):
+    def __init__(self, patients, doctors, slots, policies, appointments=(), now="2026-11-30T09:00"):
         self.patients: Dict[str, Patient] = {p.patient_id: p for p in patients}
         self.doctors: Dict[str, Doctor] = {d.doctor_id: d for d in doctors}
         self.slots: Dict[str, Slot] = {s.slot_id: s for s in slots}
         self.policies: List[dict] = list(policies)           # [{"id", "text"}]
         self.appointments: Dict[str, Appointment] = {}
         self.audit: List[dict] = []
+        self.now = now
         self._next = 1
         for a in appointments:
             self._register(a)
@@ -67,6 +71,12 @@ class Clinic:
         if a.status == "booked":
             self.slots[a.slot_id].appointment_id = a.appointment_id
         self._next = max(self._next, int(a.appointment_id[1:]) + 1)
+
+    def _start(self, slot):
+        return datetime.fromisoformat(slot.start)
+
+    def _now(self):
+        return datetime.fromisoformat(self.now)
 
     # ---- reads
     def get_patient(self, patient_id):
@@ -81,7 +91,8 @@ class Clinic:
 
     def free_slots(self, doctor_id=None):
         return [s for s in self.slots.values()
-                if s.appointment_id is None and (doctor_id is None or s.doctor_id == doctor_id)]
+                if s.appointment_id is None and self._start(s) > self._now()
+                and (doctor_id is None or s.doctor_id == doctor_id)]
 
     # ---- raw state changes (NO identity or confirmation checks here: that is the guard's job)
     def book(self, patient_id, doctor_id, slot_id):
@@ -92,8 +103,12 @@ class Clinic:
             raise ClinicError("slot_not_found")
         if slot.doctor_id != doctor_id:
             raise ClinicError("doctor_mismatch")
+        if self._start(slot) <= self._now():
+            raise ClinicError("slot_in_past")
         if slot.appointment_id is not None:
             raise ClinicError("slot_taken")
+        if any(self.slots[a.slot_id].start == slot.start for a in self.appointments_for(patient_id)):
+            raise ClinicError("patient_busy")                 # same patient, same time, other doctor
         a = Appointment(f"A{self._next:03d}", patient_id, doctor_id, slot_id)
         self._register(a)
         return a
@@ -104,13 +119,15 @@ class Clinic:
             raise ClinicError("appointment_not_found")
         if a.status != "booked":
             raise ClinicError("already_cancelled")
+        if self._start(self.slots[a.slot_id]) - self._now() < CANCEL_CUTOFF:
+            raise ClinicError("too_late")
         a.status = "cancelled"
         self.slots[a.slot_id].appointment_id = None
         return a
 
     # ---- evaluation helpers
     def snapshot(self):
-        """Comparable final state: every appointment with its status, plus which slots are taken."""
+        """Full final state. Appointment ids depend on call order, so compare arms with booked_set()."""
         return {"appointments": {k: asdict(v) for k, v in sorted(self.appointments.items())},
                 "slots_taken": {k: s.appointment_id for k, s in sorted(self.slots.items())
                                 if s.appointment_id}}
@@ -119,8 +136,15 @@ class Clinic:
         return {(a.patient_id, a.doctor_id, a.slot_id) for a in self.appointments.values()
                 if a.status == "booked"}
 
+    def cancelled_set(self):
+        return {(a.patient_id, a.doctor_id, a.slot_id) for a in self.appointments.values()
+                if a.status == "cancelled"}
+
     def clone(self):
-        return copy.deepcopy(self)
+        """Independent copy for one episode; the audit log starts empty."""
+        c = copy.deepcopy(self)
+        c.audit = []
+        return c
 
 
 def make_demo_clinic():
