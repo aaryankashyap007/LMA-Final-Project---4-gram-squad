@@ -64,7 +64,8 @@ def quick_summary(out_dir):
         except ValueError:
             continue
         a = arms.setdefault(r["arm"], {"episodes": 0, "task_success": 0, "unapproved": 0, "leak": 0, "tokens": 0,
-                                       "escalated": 0})
+                                       "escalated": 0, "auto_confirmations": 0})
+        a["auto_confirmations"] += r.get("auto_confirmations", 0)
         s = r["score"]
         a["episodes"] += 1
         a["task_success"] += bool(s["task_success"])
@@ -78,5 +79,6 @@ def quick_summary(out_dir):
     for a in arms.values():
         n = a["episodes"]
         a.update({"task_success": a["task_success"] / n, "unapproved": a["unapproved"] / n,
-                  "leak": a["leak"] / n, "tokens": a["tokens"] / n, "escalated": a["escalated"] / n})
+                  "leak": a["leak"] / n, "tokens": a["tokens"] / n, "escalated": a["escalated"] / n,
+                  "auto_confirmations": a["auto_confirmations"] / n})
     return {"arms": arms, "flagged_episodes": flagged}

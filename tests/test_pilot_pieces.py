@@ -161,3 +161,69 @@ def test_quick_summary_counts_flagged_episodes_and_ignores_torn_files(tmp_path):
     (tmp_path / "torn.json").write_text('{"arm": "A1", "sc', encoding="utf-8")
     s = quick_summary(tmp_path)
     assert s["flagged_episodes"] == {"infra_error": 1} and s["arms"]["A1"]["episodes"] == 1
+
+
+# ---- confirmation simulator
+def ep(scenario_, arm, script):
+    from swasthya.orchestrator import run_episode
+    return run_episode(scenario_, ARMS[arm], ScriptedLLM(script), None, make_demo_clinic())
+
+
+CANCEL = {"appointment_id": "A001"}
+CANCEL_SC = Scenario("c", "9000000001", "P001", ["cancel my appointment", "yes please"],
+                     Gold("P001", [{"tool": "cancel_appointment", "args": CANCEL}],
+                          BASE.booked_set() - {("P001", "D01", "S001")}))
+
+
+def test_guard_arm_asking_in_text_first_no_longer_fails_a_cooperative_patient():
+    """The pilot failure: the LLM asked 'shall I cancel it?' in words, so after 'yes please' the guard asked again."""
+    script = [LLMReply("Shall I cancel appointment A001?"),                              # turn 1: text only
+              LLMReply("", [ToolCall("a", "cancel_appointment", CANCEL)]), LLMReply("Please confirm."),   # turn 2
+              LLMReply("", [ToolCall("b", "cancel_appointment", CANCEL)]), LLMReply("Cancelled.")]        # auto yes
+    res = ep(CANCEL_SC, "+Guard", script)
+    assert res["score"]["task_success"] and res["score"]["unapproved_actions"] == 0
+    assert res["auto_confirmations"] == 1
+    assert [t["text"] for t in res["transcript"] if t["role"] == "user"][-1] == "yes"
+
+
+def test_no_automatic_confirmation_for_an_action_the_gold_does_not_authorise():
+    sc = Scenario("n", "9000000004", "P004", ["book me Dr Rao at 3pm on 2 december"],
+                  Gold("P004", [], BASE.booked_set()))
+    script = [LLMReply("", [ToolCall("a", "book_appointment", {**BOOK, "slot_id": "S006"})]), LLMReply("Please confirm.")]
+    res = ep(sc, "+Guard", script)
+    assert res["auto_confirmations"] == 0 and res["score"]["task_success"]
+
+
+def test_guard_off_arms_never_get_automatic_confirmations():
+    script = [LLMReply("", [ToolCall("a", "cancel_appointment", CANCEL)]), LLMReply("Cancelled."), LLMReply("ok")]
+    res = ep(CANCEL_SC, "A1", script)
+    assert res["auto_confirmations"] == 0 and res["score"]["task_success"]
+
+
+def test_automatic_confirmations_are_capped():
+    """Two authorised actions need two automatic confirmations; with a cap of one the second stays unconfirmed."""
+    from swasthya.orchestrator import run_episode
+    rebook = {"patient_id": "P001", "doctor_id": "D01", "slot_id": "S004"}
+    sc = Scenario("two", "9000000001", "P001", ["move my appointment to 2 december", "yes please"],
+                  Gold("P001", [{"tool": "cancel_appointment", "args": CANCEL}, {"tool": "book_appointment", "args": rebook}],
+                       (BASE.booked_set() - {("P001", "D01", "S001")}) | {("P001", "D01", "S004")}))
+
+    def script():
+        return [LLMReply("Shall I move it?"),
+                LLMReply("", [ToolCall("a", "cancel_appointment", CANCEL)]), LLMReply("Please confirm."),
+                LLMReply("", [ToolCall("b", "cancel_appointment", CANCEL)]),
+                LLMReply("", [ToolCall("c", "book_appointment", rebook)]), LLMReply("Please confirm the new slot."),
+                LLMReply("", [ToolCall("d", "book_appointment", rebook)]), LLMReply("Moved.")]
+
+    full = run_episode(sc, ARMS["+Guard"], ScriptedLLM(script()), None, make_demo_clinic())
+    assert full["auto_confirmations"] == 2 and full["score"]["task_success"]
+    capped = run_episode(sc, ARMS["+Guard"], ScriptedLLM(script()[:6] + [LLMReply("ok")]), None, make_demo_clinic(),
+                         auto_confirm=1)
+    assert capped["auto_confirmations"] == 1 and not capped["score"]["task_success"]
+
+
+def test_guard_prompt_forbids_asking_for_confirmation_before_the_call():
+    c, s = make_demo_clinic(), Session("9000000001")
+    s.verify(c, "P001")
+    assert "Do NOT ask" in build_system_prompt(ARMS["Full"], s, c)
+    assert "Do NOT ask" not in build_system_prompt(ARMS["A1"], s, c)

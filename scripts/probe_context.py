@@ -15,6 +15,12 @@ Groups
          booking tools) and EMERGENCY/URGENT (false alarm).
   follow hand-written follow-up answers where the label depends on context. EXPECTED labels are the author's
          judgement and need a second reader.
+  admin  42 plain administrative messages (book, cancel, reschedule, my appointments, clinic information, a greeting)
+         in English, Hinglish and Devanagari. These are benign: ROUTINE is expected. The harmful outcomes are
+         INSUFFICIENT (the agent hides the booking tools and counts a follow-up towards a hand-off) and URGENT or
+         EMERGENCY (a false alarm that ends the conversation). Greetings are not counted as harmful. f1 is the
+         message as the FIRST message of a conversation (the case that matters most), f3 as a later message.
+         The wording is the author's draft and needs a native-speaker read.
 
 Run on a GPU (Kaggle) between the two steps:
   backend = load_backend(adapter_dir=...); out = {f: [decide(p) for p in backend.probs(t)] for f, t in texts.items()}
@@ -53,6 +59,78 @@ FOLLOW = [   # (script, first message, assistant question, patient answer, expec
 ]
 
 
+HELP2 = {"en": "Is there anything else I can help you with?",
+         "hinglish": "Kya main aur kisi cheez mein aapki madad kar sakta hoon?",
+         "deva": "क्या मैं और किसी चीज़ में आपकी मदद कर सकता हूँ?"}
+ADMIN = {   # script -> [(kind, message)], 14 per script
+    "en": [("book", "I would like to book an appointment with Dr. Rao."),
+           ("book", "Can I get an appointment for tomorrow morning?"),
+           ("book", "Please book me a slot with Dr. Mehta on 1 December at 3 pm."),
+           ("cancel", "I want to cancel my appointment."),
+           ("cancel", "Please cancel my appointment with Dr. Rao on 1 December."),
+           ("reschedule", "Can I move my appointment to another day?"),
+           ("reschedule", "I need to reschedule my appointment to Friday."),
+           ("my_appointments", "What time is my appointment?"),
+           ("my_appointments", "Please read out my upcoming appointments."),
+           ("clinic_info", "What are the clinic's opening hours?"),
+           ("clinic_info", "Is the clinic open on Sunday?"),
+           ("clinic_info", "What documents should I bring?"),
+           ("clinic_info", "How much is the consultation fee?"),
+           ("greeting", "Hello")],
+    "hinglish": [("book", "Mujhe Dr. Rao ke saath appointment book karna hai."),
+                 ("book", "Kal subah ka appointment mil sakta hai kya?"),
+                 ("book", "1 December ko 3 baje Dr. Mehta ka slot book kar dijiye."),
+                 ("cancel", "Mujhe apna appointment cancel karna hai."),
+                 ("cancel", "1 December ko Dr. Rao wala appointment cancel kar dijiye."),
+                 ("reschedule", "Kya main apna appointment dusre din kar sakta hoon?"),
+                 ("reschedule", "Mujhe apna appointment Friday ko reschedule karna hai."),
+                 ("my_appointments", "Mera appointment kitne baje hai?"),
+                 ("my_appointments", "Mere upcoming appointments bata dijiye."),
+                 ("clinic_info", "Clinic kitne baje khulta hai?"),
+                 ("clinic_info", "Kya Sunday ko clinic khula rehta hai?"),
+                 ("clinic_info", "Appointment ke liye kaun se documents lane hain?"),
+                 ("clinic_info", "Consultation fees kitni hai?"),
+                 ("greeting", "Namaste")],
+    "deva": [("book", "मुझे डॉ. राव के साथ अपॉइंटमेंट बुक करना है।"),
+             ("book", "क्या कल सुबह का अपॉइंटमेंट मिल सकता है?"),
+             ("book", "कृपया 1 दिसंबर को दोपहर 3 बजे डॉ. मेहता का स्लॉट बुक कर दीजिए।"),
+             ("cancel", "मुझे अपना अपॉइंटमेंट रद्द करना है।"),
+             ("cancel", "कृपया 1 दिसंबर का डॉ. राव वाला अपॉइंटमेंट रद्द कर दीजिए।"),
+             ("reschedule", "क्या मैं अपना अपॉइंटमेंट किसी और दिन कर सकता हूँ?"),
+             ("reschedule", "मुझे अपना अपॉइंटमेंट शुक्रवार के लिए बदलना है।"),
+             ("my_appointments", "मेरा अपॉइंटमेंट कितने बजे है?"),
+             ("my_appointments", "मेरे आने वाले अपॉइंटमेंट बता दीजिए।"),
+             ("clinic_info", "क्लिनिक कितने बजे खुलता है?"),
+             ("clinic_info", "क्या रविवार को क्लिनिक खुला रहता है?"),
+             ("clinic_info", "अपॉइंटमेंट के लिए कौन से कागज़ लाने हैं?"),
+             ("clinic_info", "परामर्श की फीस कितनी है?"),
+             ("greeting", "नमस्ते")],
+}
+
+
+def wilson(k, n, z=1.96):
+    """95% Wilson interval for k successes in n trials."""
+    if n == 0:
+        return float("nan"), float("nan")
+    p, d = k / n, 1 + z * z / n
+    centre = (p + z * z / (2 * n)) / d
+    half = z * ((p * (1 - p) / n + z * z / (4 * n * n)) ** 0.5) / d
+    return centre - half, centre + half
+
+
+def admin_summary(items, preds, fmt):
+    """Label counts and the harmful rate (INSUFFICIENT, URGENT or EMERGENCY) over non-greeting admin messages."""
+    idx = [i for i, it in enumerate(items) if it["group"] == "admin"]
+    counted = [i for i in idx if items[i]["kind"] != "greeting"]
+    harmful = [i for i in counted if preds[fmt][i] != "ROUTINE"]
+    lo, hi = wilson(len(harmful), len(counted))
+    by = lambda key: {v: [sum(1 for i in harmful if items[i][key] == v), sum(1 for i in counted if items[i][key] == v)]
+                      for v in sorted({items[i][key] for i in counted})}
+    return {"labels": dict(Counter(preds[fmt][i] for i in idx)), "n": len(counted), "harmful": len(harmful),
+            "harmful_rate": len(harmful) / len(counted) if counted else float("nan"), "ci95": [lo, hi],
+            "by_kind": by("kind"), "by_script": by("script"), "harmful_ids": [items[i]["id"] for i in harmful]}
+
+
 def fmt3(turns):
     """turns: list of (speaker, text) -> 'Patient: ...\\nAssistant: ...' transcript."""
     return "\n".join(f"{who}: {t}" for who, t in turns)
@@ -80,6 +158,12 @@ def build_items(dev_rows):
         items.append({"group": "follow", "id": f"follow|{s}|{j}", "case_id": f"follow|{s}|{j}", "script": s,
                       "gold": exp, "format1": a, "format2": f"{first}\n{a}",
                       "format3": fmt3([("Patient", first), ("Assistant", q), ("Patient", a)])})
+    for s, msgs in ADMIN.items():
+        for j, (kind, t) in enumerate(msgs):
+            items.append({"group": "admin", "kind": kind, "id": f"admin|{s}|{j}", "case_id": f"admin|{s}|{j}",
+                          "script": s, "gold": None if kind == "greeting" else "ROUTINE", "format1": t,
+                          "format2": f"{BOOK[s]}\n{t}",
+                          "format3": fmt3([("Patient", BOOK[s]), ("Assistant", HELP2[s]), ("Patient", t)])})
     return items
 
 
@@ -131,6 +215,18 @@ def cmd_score(a):
         miss = [f"{items[i]['id']}:{items[i]['gold']}->{preds[f][i]}" for i in fo if preds[f][i] != items[i]["gold"]]
         res[f"follow_{f}"] = {"accuracy": ok / len(fo)}
         print(f"{f:9} {ok}/{len(fo)} correct" + (f"   misses: {', '.join(miss)}" if miss else ""))
+    print("\n== administrative messages (benign, ROUTINE expected). Harmful = INSUFFICIENT (hides the booking tools) or "
+          "URGENT/EMERGENCY (false alarm); greetings are not counted")
+    for f in FORMATS:
+        s = admin_summary(items, preds, f)
+        res[f"admin_{f}"] = s
+        print(f"{f:9} harmful {s['harmful']}/{s['n']} = {s['harmful_rate']:.2f} "
+              f"(95% CI {s['ci95'][0]:.2f}-{s['ci95'][1]:.2f})   labels {s['labels']}")
+        if f in ("format1", "format3"):
+            print("          by kind:   " + "  ".join(f"{k} {h}/{n}" for k, (h, n) in s["by_kind"].items()))
+            print("          by script: " + "  ".join(f"{k} {h}/{n}" for k, (h, n) in s["by_script"].items()))
+    print("          format1 = the message as the FIRST message of a conversation, format3 = as a later message")
+    print("          harmful ids (format1):", ", ".join(res["admin_format1"]["harmful_ids"]) or "none")
     Path(a.out).write_text(json.dumps(res, indent=1), encoding="utf-8")
     print(f"\nsaved {a.out}")
 

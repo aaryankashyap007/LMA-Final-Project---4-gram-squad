@@ -104,7 +104,10 @@ os.environ["LLM_API_BASE"] = "https://<your provider>/v1"      # OpenAI-compatib
 !python $KD/run_agent.py --scenarios smoke --arms +Gate Full --runs 1 --out /kaggle/working/agent_smoke
 
 # cell 6: main run (all five arms, 3 runs). Re-running the same cell resumes where it stopped.
-!python $KD/run_agent.py --scenarios /kaggle/input/<scenarios dataset>/scenarios.jsonl --runs 3 --out /kaggle/working/agent
+# SC is found automatically, so there is no placeholder to edit. Use the same --token_budget for every arm.
+SC = !find /kaggle/input -name scenarios_benign_v0.jsonl | head -1
+SC = SC[0]; print(SC)
+!python $KD/run_agent.py --scenarios $SC --runs 3 --token_budget 40000 --out /kaggle/working/agent_benign
 
 # cell 7: package and download (also zip after every long cell: sessions die)
 !cd /kaggle/working && zip -rq agent.zip agent agent_smoke && ls -la agent.zip
@@ -119,6 +122,44 @@ What to look at:
 - Free-tier endpoints rate-limit: raise `--min_interval` (seconds between calls) if you see many retries or errors.
 - Results are in `<out>/episodes/`, a summary in `<out>/run_summary.json`, the settings (never the key) in
   `<out>/run_config.json`, and the gate cache in `<out>/gate_cache_*.jsonl`.
+
+## 2d. Gate probe: context and administrative messages (`scripts/probe_context.py`)
+Measures how G1 treats short replies, follow-up answers, and 42 plain administrative messages (book, cancel,
+reschedule, my appointments, clinic information) in the three scripts. The question for the administrative group:
+how often does G1 give a benign request a harmful label (INSUFFICIENT hides the booking tools; URGENT or EMERGENCY is a
+false alarm)?
+```
+# on your PC (repo folder, venv active): build the probe, then upload outputs/probe/probe_texts.json as a Kaggle dataset
+python scripts/probe_context.py build
+
+# Kaggle cell (attach: swasthya-data, the adapter dataset, the probe dataset; T4 GPU on)
+import sys, glob, json, os
+src = glob.glob("/kaggle/input/**/src/swasthya", recursive=True)[0]
+adapter = os.path.dirname(glob.glob("/kaggle/input/**/adapter_config.json", recursive=True)[0])
+texts = json.load(open(glob.glob("/kaggle/input/**/probe_texts.json", recursive=True)[0]))
+sys.path.insert(0, os.path.dirname(src))
+from swasthya.gate_backend import load_backend
+from swasthya.gate import decide
+backend = load_backend(adapter_dir=adapter)
+out = {f: [decide(p) for p in backend.probs(t)] for f, t in texts.items()}
+json.dump(out, open("/kaggle/working/probe_out.json", "w"))
+print({f: len(v) for f, v in out.items()})        # expect 209 per format
+
+# back on your PC: put probe_out.json in outputs/probe/ and run
+python scripts/probe_context.py score
+```
+Read the last section of the output ("administrative messages"). `format1` is the message as the first message of a
+conversation, which is the case that matters. If the harmful rate is high, tell me which kinds and scripts, and we
+decide between letting the intent tagger override INSUFFICIENT for administrative-only messages, or retraining G1 with
+administrative examples. The wording of the Hinglish and Devanagari messages is a draft: have a native speaker read it.
+
+## 2e. Benign scenario set (`data/d4_clinic/scenarios_benign_v0.jsonl`)
+39 scenarios (13 families x English, Hinglish, Devanagari): bookings, cancellations, a registered proxy caller, a
+reschedule, information questions, a greeting before a booking, and three that must NOT end in a booking (an emergency
+interrupting a booking, an urgent child, a medical-advice request). Regenerate with
+`python scripts/make_scenarios_benign.py`. Upload the .jsonl file as a Kaggle dataset, attach it, and use cell 6 above.
+A perfect-agent test proves every scenario is solvable through the guard's confirmation protocol, so a failure in a
+real run points at the model or the gate, not the script. Adversarial scenarios are a separate file (not written yet).
 
 ## 3. Back on your PC
 ```bash

@@ -160,7 +160,8 @@ def main():
     print(f"\nran {stats['ran']}, skipped {stats['skipped']} (planned {total}) in {summ['seconds']}s")
     for arm, v in summ["arms"].items():
         print(f"  {arm:<9} n={v['episodes']:<4} success={v['task_success']:.2f} unapproved={v['unapproved']:.2f} "
-              f"leak={v['leak']:.2f} escalated={v['escalated']:.2f} tokens/ep={v['tokens']:.0f}")
+              f"leak={v['leak']:.2f} escalated={v['escalated']:.2f} auto_yes/ep={v['auto_confirmations']:.2f} "
+              f"tokens/ep={v['tokens']:.0f}")
     if summ["flagged_episodes"]:
         print("FLAGGED episodes (invalid for analysis, rerun this command to retry):", summ["flagged_episodes"])
 
