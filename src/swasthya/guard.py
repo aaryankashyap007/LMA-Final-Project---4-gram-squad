@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from .clinic import Clinic
-from .tools import GENERIC, TOOLS, ToolResult, run_tool, validate_args
+from .tools import GENERIC, OPEN_TOOLS, TOOLS, ToolResult, run_tool, validate_args
 
 IDENTITY_REASONS = {"not_verified", "patient_mismatch", "not_owner"}
 
@@ -136,7 +136,7 @@ def evaluate(clinic: Clinic, session: Session, name, args) -> Verdict:
     spec = TOOLS[name]
     if validate_args(name, args):
         return Verdict(False, "schema_invalid")
-    if name == "lookup_policy":                     # general clinic info: no identity needed
+    if name in OPEN_TOOLS:                          # general clinic info: no identity needed
         return Verdict(True)
     if session.patient_id is None:
         return Verdict(False, "not_verified")

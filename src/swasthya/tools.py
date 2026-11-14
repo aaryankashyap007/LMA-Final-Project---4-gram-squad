@@ -21,6 +21,7 @@ class ToolSpec:
     name: str
     mutating: bool
     args: Dict[str, str]        # arg name -> "id" (format in ID_PATTERNS) or "text" (free string)
+    optional: tuple = ()        # argument names that may be left out
 
 
 TOOLS = {
@@ -29,7 +30,11 @@ TOOLS = {
                                  {"patient_id": "id", "doctor_id": "id", "slot_id": "id"}),
     "cancel_appointment": ToolSpec("cancel_appointment", True, {"appointment_id": "id"}),
     "lookup_policy": ToolSpec("lookup_policy", False, {"query": "text"}),
+    # without this the LLM cannot learn the doctor and slot ids that book_appointment needs
+    "list_available_slots": ToolSpec("list_available_slots", False, {"doctor_id": "id"}, optional=("doctor_id",)),
 }
+OPEN_TOOLS = {"lookup_policy", "list_available_slots"}      # general clinic information: no identity needed
+MAX_SLOTS_SHOWN = 20
 
 
 @dataclass
@@ -49,7 +54,7 @@ def validate_args(name, args):
     if not isinstance(args, dict):
         return ["arguments must be an object"]
     errs: List[str] = []
-    errs += [f"missing argument {k}" for k in spec.args if k not in args]
+    errs += [f"missing argument {k}" for k in spec.args if k not in args and k not in spec.optional]
     if any(k not in spec.args for k in args):
         errs.append("unexpected argument")
     for k, kind in spec.args.items():
@@ -122,6 +127,13 @@ def run_tool(clinic: Clinic, name, args) -> ToolResult:
             return ToolResult(True, {"appointment_id": a.appointment_id, "status": a.status})
         if name == "lookup_policy":
             return ToolResult(True, _policy_lookup(clinic, args["query"]))
+        if name == "list_available_slots":
+            slots = sorted(clinic.free_slots(args.get("doctor_id")), key=lambda s: (s.start, s.slot_id))
+            rows = [{"slot_id": s.slot_id, "doctor_id": s.doctor_id, "doctor": clinic.doctors[s.doctor_id].name,
+                     "start": s.start} for s in slots[:MAX_SLOTS_SHOWN]]
+            return ToolResult(True, {"today": clinic.now, "slots": rows, "more_slots": len(slots) > MAX_SLOTS_SHOWN,
+                                     "doctors": [{"doctor_id": d.doctor_id, "name": d.name,
+                                                  "specialty": d.specialty} for d in clinic.doctors.values()]})
     except ClinicError as e:
         code = PUBLIC.get(e.code, "failed")
         return ToolResult(False, error=code, message=GENERIC[code])

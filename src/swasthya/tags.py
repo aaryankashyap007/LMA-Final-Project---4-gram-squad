@@ -179,6 +179,7 @@ PROXIMITY = {
         (["breathing", "breathe", "breath", "saans", "saansein", "saanse", "सांस", "सांसें", "सांसे"],
          ["problem", "issue", "issues", "trouble", "difficulty", "heavily", "heavy", "fast", "slow", "struggling",
           "dikkat", "taklif", "tadap", "bhaari", "bhari", "dheemi", "तकलीफ", "दिक्कत", "धीमी", "भारी", "तड़प"], 4),
+        (["saans", "saansein", "सांस", "सांसें"], ["nahi", "नहीं"], 2),     # "saans bhi nahi aa rahi"
         (["throat", "gala", "गला"], ["closing", "band", "बंद"], 4),
         (["skin", "face", "lips", "त्वचा", "चेहरा", "होंठ", "honth", "hont"],
          ["blue", "purple", "neela", "neeli", "neele", "नीला", "नीली", "नीले", "बैंगनी"], 3)],

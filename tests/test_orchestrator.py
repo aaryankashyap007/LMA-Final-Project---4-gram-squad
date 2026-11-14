@@ -121,7 +121,7 @@ def test_insufficient_hides_state_changing_tools_even_with_guard_off_then_escala
               LLMReply("Any fever?")]
     orch, llm = make("+Gate", script, gate)                  # guard off: the restriction is the gate's own
     assert orch.respond("I feel bad") == "How long has it been?"
-    assert llm.calls[0]["tools"] == ["lookup_appointments", "lookup_policy"]
+    assert llm.calls[0]["tools"] == ["lookup_appointments", "lookup_policy", "list_available_slots"]
     last = orch.clinic.audit[-1]
     assert last["verdict"] == "gate_restricted" and not last["executed"]
     assert ("P004", "D01", "S003") not in orch.clinic.booked_set()
@@ -193,7 +193,7 @@ def test_vague_before_any_routine_judgement_is_not_sticky():
     orch, llm = make("Full", [LLMReply("What symptoms?")], gate)
     orch.respond("I feel bad")
     assert orch.followups == 1 and not orch.judged_routine
-    assert llm.calls[0]["tools"] == ["lookup_appointments", "lookup_policy"]
+    assert llm.calls[0]["tools"] == ["lookup_appointments", "lookup_policy", "list_available_slots"]
 
 
 def test_emergency_stated_in_an_answer_is_judged_with_the_question_it_answers():

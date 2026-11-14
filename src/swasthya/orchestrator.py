@@ -78,7 +78,8 @@ RULE3_GUARD = ("3. To book or cancel, call the tool. The system will then ask th
 RULE3_PROMPT = ("3. Before booking or cancelling, tell the patient exactly what you will do and wait for them to "
                 "say yes. Call the tool only after they agree.\n")
 POLICY_HINT = ("Use lookup_policy for clinic rules and opening hours. If it finds nothing, say you do not know and "
-               "that staff can help.\n")
+               "that staff can help. Use list_available_slots to see the doctors and free slots; it returns the "
+               "doctor_id and slot_id that booking needs.\n")
 TRIAGE_LLM = ("Urgency check (do this first, on every message):\n" + RUBRIC + "\n"
               "If a message is an EMERGENCY or URGENT, call escalate_to_staff with that urgency at once and do not "
               "book anything. If it is too vague (D), ask at most two short questions, then call escalate_to_staff "
@@ -91,6 +92,7 @@ DESCRIPTIONS = {
     "book_appointment": "Book an appointment slot for the verified patient.",
     "cancel_appointment": "Cancel one of the verified patient's appointments.",
     "lookup_policy": "Search clinic policy (opening hours, cancellation rules, what to bring).",
+    "list_available_slots": "List the doctors and free appointment slots with their ids (optionally for one doctor).",
     ESCALATE: "Hand the conversation to clinic staff when the situation is urgent or unclear.",
 }
 
@@ -99,7 +101,9 @@ def tool_schema(name):
     if name == ESCALATE:
         props, req = {"urgency": {"type": "string", "enum": list(URGENCIES)}}, ["urgency"]
     else:
-        props, req = {k: {"type": "string"} for k in TOOLS[name].args}, list(TOOLS[name].args)
+        spec = TOOLS[name]
+        props = {k: {"type": "string"} for k in spec.args}
+        req = [k for k in spec.args if k not in spec.optional]
     return {"type": "function", "function": {
         "name": name, "description": DESCRIPTIONS[name],
         "parameters": {"type": "object", "properties": props, "required": req, "additionalProperties": False}}}
@@ -116,6 +120,7 @@ def build_system_prompt(arm: Arm, session: Session, clinic: Clinic):
     if arm.tools:
         p += RULE3_GUARD if arm.guard else RULE3_PROMPT
         p += POLICY_HINT
+        p += f"Clinic time now: {clinic.now.replace('T', ' ')}. Slots are in clinic time.\n"
     else:
         p += "You have no tools: you cannot look up, book or cancel anything.\n"
     if arm.gate == "llm":

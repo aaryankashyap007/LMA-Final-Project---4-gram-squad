@@ -7,6 +7,8 @@ from swasthya.tags import analyse_message, intents, red_flags
     ("I cannot breathe", "breathing_difficulty"),
     ("my father is breathing very heavily", "breathing_difficulty"),         # proximity rule
     ("saans nhi aa rahi", "breathing_difficulty"),                           # spelling variant
+    ("saans bhi nahi aa rahi", "breathing_difficulty"),                      # a word between "saans" and "nahi"
+    ("सांस भी नहीं आ रही", "breathing_difficulty"),
     ("sans nhi aa rhi", "breathing_difficulty"),
     ("सांस नहीं आ रही", "breathing_difficulty"),
     ("होंठ नीले पड़ गए हैं", "breathing_difficulty"),

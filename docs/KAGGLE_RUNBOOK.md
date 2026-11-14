@@ -76,6 +76,50 @@ Rename any run folder that would collide with an existing name in `outputs/raw/`
 noisy runs have their own `--name`, so they do not collide). Then on your PC: `python scripts/score_all.py`.
 The noisy and early-stop runs are compared against the plain all-script runs, same seeds.
 
+## 2c. Agent run (the 2x2 experiment): `kaggle/run_agent.py`
+Rebuild and re-upload the bundle first (`python scripts/make_kaggle_bundle.py`, then a New Version of `swasthya-data`).
+Attach to the notebook: the `swasthya-data` bundle, your G1 adapter dataset (only for `+Gate`, `+Gate_V0` and `Full`),
+and, for the real run, a scenarios dataset. Internet On. A T4 GPU is only needed for the gate arms.
+Add the API key under **Add-ons > Secrets** with the label `LLM_API_KEY`. Never paste it into a cell.
+```
+# cell 1: install (only needed for the gate arms)
+!pip install -q -U bitsandbytes peft accelerate
+
+# cell 2: locate the scripts and set the API credentials (the key is read from the secret, never printed)
+KD = !find /kaggle/input -type d -name kaggle | head -1
+KD = KD[0]
+import os
+from kaggle_secrets import UserSecretsClient
+os.environ["LLM_API_KEY"] = UserSecretsClient().get_secret("LLM_API_KEY")
+os.environ["LLM_API_BASE"] = "https://<your provider>/v1"      # OpenAI-compatible endpoint of your subscription
+
+# cell 3: PREFLIGHT. Does the API answer, make a valid tool call in English AND Hindi, repeat at temperature 0?
+# If it says FAILED, do not start the run: fix the endpoint/model, or change the model for ALL arms.
+!python $KD/run_agent.py --preflight
+
+# cell 4: pilot WITHOUT a GPU: 5 built-in scenarios on the arms that need no gate (about 15-30 API calls per arm)
+!python $KD/run_agent.py --scenarios smoke --arms A0 A1 +Guard --runs 1 --out /kaggle/working/agent_smoke
+
+# cell 5: pilot WITH the tuned gate (needs the GPU and the adapter dataset)
+!python $KD/run_agent.py --scenarios smoke --arms +Gate Full --runs 1 --out /kaggle/working/agent_smoke
+
+# cell 6: main run (all five arms, 3 runs). Re-running the same cell resumes where it stopped.
+!python $KD/run_agent.py --scenarios /kaggle/input/<scenarios dataset>/scenarios.jsonl --runs 3 --out /kaggle/working/agent
+
+# cell 7: package and download (also zip after every long cell: sessions die)
+!cd /kaggle/working && zip -rq agent.zip agent agent_smoke && ls -la agent.zip
+```
+What to look at:
+- **Preflight** must pass its three hard checks. The two soft checks tell you whether token counts are real
+  (otherwise the budget uses a character estimate) and whether temperature 0 repeats exactly.
+- **Smoke pilot:** `A1` (guard off) should show `unapproved` and `leak` above 0 on the injection and impersonation
+  scenarios, and `+Guard` should show 0. If both are 0, the model is refusing on its own: that is a result, not a bug.
+- Lines ending in `FLAGS infra_error` mean the API failed after its retries, and `FLAGS gate_outage` means the gate was
+  unavailable. Those episodes are invalid and are re-run automatically when you run the same command again.
+- Free-tier endpoints rate-limit: raise `--min_interval` (seconds between calls) if you see many retries or errors.
+- Results are in `<out>/episodes/`, a summary in `<out>/run_summary.json`, the settings (never the key) in
+  `<out>/run_config.json`, and the gate cache in `<out>/gate_cache_*.jsonl`.
+
 ## 3. Back on your PC
 ```bash
 unzip -q ~/Downloads/outputs.zip -d /tmp/k && cp -r /tmp/k/outputs/* outputs/raw/

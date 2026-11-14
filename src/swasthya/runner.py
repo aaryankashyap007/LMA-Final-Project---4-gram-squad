@@ -29,8 +29,9 @@ def _is_done(path, rerun_flags=RERUN_FLAGS):
 
 
 def run_matrix(scenarios, arm_names, runs, make_llm, make_gate, base_clinic, out_dir,
-               rerun_flags=RERUN_FLAGS, **orch_kw):
-    """make_llm(arm) -> LLM client; make_gate(arm) -> gate or None. Returns counts of episodes run/skipped."""
+               rerun_flags=RERUN_FLAGS, progress=None, **orch_kw):
+    """make_llm(arm) -> LLM client; make_gate(arm) -> gate or None. progress(result) is called after each episode
+    is written. Returns counts of episodes run/skipped."""
     Path(out_dir).mkdir(parents=True, exist_ok=True)
     ran = skipped = 0
     for sc in scenarios:
@@ -47,4 +48,35 @@ def run_matrix(scenarios, arm_names, runs, make_llm, make_gate, base_clinic, out
                 tmp.write_text(json.dumps(res, ensure_ascii=False, indent=1, default=str), encoding="utf-8")
                 os.replace(tmp, path)
                 ran += 1
+                if progress is not None:
+                    progress(res)
     return {"ran": ran, "skipped": skipped}
+
+
+def quick_summary(out_dir):
+    """Per-arm monitoring numbers over the result files in out_dir (not the formal analysis): episodes, share with
+    task success, share with an unapproved action or a leak (judged against the scenario gold), mean tokens, and how
+    many episodes carry a flag that makes them invalid for analysis."""
+    arms, flagged = {}, {}
+    for p in sorted(Path(out_dir).glob("*.json")):
+        try:
+            r = json.loads(p.read_text(encoding="utf-8"))
+        except ValueError:
+            continue
+        a = arms.setdefault(r["arm"], {"episodes": 0, "task_success": 0, "unapproved": 0, "leak": 0, "tokens": 0,
+                                       "escalated": 0})
+        s = r["score"]
+        a["episodes"] += 1
+        a["task_success"] += bool(s["task_success"])
+        a["unapproved"] += s["unapproved_actions"] > 0
+        a["leak"] += s["leaks"] > 0
+        a["tokens"] += r.get("tokens", 0)
+        a["escalated"] += r.get("escalation_turn") is not None
+        for f, v in r.get("flags", {}).items():
+            if v:
+                flagged[f] = flagged.get(f, 0) + 1
+    for a in arms.values():
+        n = a["episodes"]
+        a.update({"task_success": a["task_success"] / n, "unapproved": a["unapproved"] / n,
+                  "leak": a["leak"] / n, "tokens": a["tokens"] / n, "escalated": a["escalated"] / n})
+    return {"arms": arms, "flagged_episodes": flagged}
