@@ -20,7 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from swasthya import kio  # noqa: E402
 from swasthya.normaliser import detect_script  # noqa: E402
-from swasthya.tags import RED_FLAGS, red_flags  # noqa: E402
+from swasthya.tags import RED_FLAGS, administrative_only, red_flags  # noqa: E402
 
 CUE_RULES = {
     "breathing_difficulty": r"breath|gasp|suffocat|chok|blue_lips|blue_skin|purple|throat_closing|asthma_attack",
@@ -71,12 +71,14 @@ def main():
         tp, fp, fn = Counter(), Counter(), Counter()
         any_flag = defaultdict(lambda: [0, 0])
         script_ok, script_conf = 0, Counter()
+        admin = Counter()
         for r in rows:
             pred, truth = set(red_flags(r["text"])), cue_tags(r["cues"])
             for t in RED_FLAGS:
                 tp[t] += t in pred and t in truth
                 fp[t] += t in pred and t not in truth
                 fn[t] += t not in pred and t in truth
+            admin[r["label"]] += administrative_only(r["text"])
             any_flag[r["label"]][0] += bool(pred)
             any_flag[r["label"]][1] += 1
             s = detect_script(r["text"])
@@ -91,6 +93,9 @@ def main():
         L += ["", "Share of renderings with at least one tag, by gold urgency label "
               "(a sound tagger flags most EMERGENCY and few ROUTINE):", ""]
         L += [f"- {lab}: {k}/{n} = {k / n:.2f}" for lab, (k, n) in sorted(any_flag.items())]
+        L += ["", "Messages the administrative override would touch (an INSUFFICIENT label on them is treated as "
+              "ROUTINE), by gold label. Safe only if every one is ROUTINE: "
+              f"{dict(admin) or 'none'}"]
         L += ["", f"Script detection: {script_ok}/{len(rows)} = {script_ok / len(rows):.3f}; "
               f"errors by (true, detected): {dict(script_conf) or 'none'}", ""]
     out = ROOT / a.out

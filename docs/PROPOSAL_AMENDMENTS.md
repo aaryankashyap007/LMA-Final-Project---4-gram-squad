@@ -58,3 +58,28 @@ The runbook's script-transfer ablations were called A1/A2, which clashed with th
 (Table 1). They are now S1 (MuRIL, single training script) and S2 (G1, English only). A0, A1, +Gate, +Guard and Full
 mean only the agent arms. The code also has `+Gate_V0` (a prompted Qwen gate with the guard off), added so that
 "separating the decision from the LLM" can be told apart from "fine-tuning the gate".
+
+## 4. G1 and administrative messages: finding and the override
+
+**Finding** (probe on 42 plain administrative messages, 39 counted; `scripts/probe_context.py`, adapter seed 13):
+G1 was trained on symptom messages, so it calls administrative text INSUFFICIENT. As the first message of a conversation
+79% (31 of 39) got a harmful label (INSUFFICIENT, which hides the booking tools): clinic-information and
+my-appointments requests 100%, every Devanagari message (13 of 13), English and Hinglish 9 of 13 each. Later in a
+conversation (with the assistant's preceding message) English and Hinglish recover completely (0 of 13 harmful) but
+Devanagari does not (10 of 13). Without a fix, a Hindi-speaking patient could not complete a booking in the gate arms.
+
+**Fix** (`tags.administrative_only`, `Orchestrator(admin_override=True)`): an INSUFFICIENT label on a message that is
+purely administrative is treated as ROUTINE. It is deliberately strict because D3 contains genuinely vague requests that
+look administrative ("Appointment for heart issue", "Depression doctor appointment", "Doctor appointment required"),
+which must keep INSUFFICIENT. A message qualifies only if it has administrative intents only, no red flag, no
+symptom, no medical-advice request, no clinical vocabulary, and, for a booking, concrete specifics (a named doctor, a
+date or a time). EMERGENCY and URGENT are never overridden.
+- On the probe it cuts the harmful rate from 79% to about 5% for first messages.
+- On D3 it would touch only 8 renderings, all gold ROUTINE (`docs/TAGGER_EVAL.md`), so it never relabels a vague, urgent
+  or emergency message.
+- It changes what the gate arms measure: before, the gate's INSUFFICIENT label hid the tools and so blocked an injected
+  "cancel appointment A001" by accident. Now the model and the action guard decide, which makes the guard comparison
+  cleaner. Report the gate as "G1 plus a deterministic administrative override".
+- Limits: the intent lexicon was extended after seeing the probe messages, so the 5% is optimistic; the probe wording is
+  the author's draft and needs a native-speaker read; the alternative, retraining G1 with administrative examples, is
+  not done.

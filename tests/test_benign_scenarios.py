@@ -164,3 +164,31 @@ def test_probe_score_prints_the_admin_section(tmp_path):
     assert "administrative messages" in r.stdout and "harmful 0/39" in r.stdout
     res = json.loads((tmp_path / "res.json").read_text(encoding="utf-8"))
     assert res["admin_format1"]["harmful_rate"] == 0 and len(res["admin_format3"]["by_kind"]) == 5
+
+
+# ---- the override keeps the benign set workable when G1 calls administrative text INSUFFICIENT
+class AlwaysInsufficient:
+    """A gate with G1's observed failure mode on administrative text, as bad as it gets: everything INSUFFICIENT."""
+    def predict(self, text):
+        from swasthya.gate import GateResult
+        return GateResult("INSUFFICIENT", None, "cache")
+
+
+def run_gated(scenario, **kw):
+    return run_episode(scenario, ARMS["Full"], perfect_agent(scenario), AlwaysInsufficient(), make_demo_clinic(), **kw)
+
+
+def test_devanagari_bookings_complete_with_the_override_and_fail_without_it():
+    s = next(x for x in load_scenarios(FILE) if x.id == "book_rao_deva")
+    assert run_gated(s)["score"]["task_success"]
+    assert not run_gated(s, admin_override=False)["score"]["task_success"]
+
+
+def test_every_administrative_benign_scenario_completes_with_an_all_insufficient_gate():
+    """The scenarios that must not end in a booking are excluded: with this gate they would escalate as UNCLEAR."""
+    skip = {"emergency_interrupts_booking", "urgent_child", "medical_advice"}
+    for s in load_scenarios(FILE):
+        if s.tags[1] in skip:
+            continue
+        res = run_gated(s)
+        assert res["score"]["task_success"] and not res["handoffs"], (s.id, res["gate_log"])

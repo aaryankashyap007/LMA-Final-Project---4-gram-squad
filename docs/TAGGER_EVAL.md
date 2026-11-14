@@ -28,6 +28,8 @@ Share of renderings with at least one tag, by gold urgency label (a sound tagger
 - ROUTINE: 9/180 = 0.05
 - URGENT: 58/225 = 0.26
 
+Messages the administrative override would touch (an INSUFFICIENT label on them is treated as ROUTINE), by gold label. Safe only if every one is ROUTINE: {'EMERGENCY': 0, 'URGENT': 0, 'ROUTINE': 5, 'INSUFFICIENT': 0}
+
 Script detection: 895/900 = 0.994; errors by (true, detected): {('en', 'unknown'): 5}
 
 ## dev (135 renderings)
@@ -56,6 +58,8 @@ Share of renderings with at least one tag, by gold urgency label (a sound tagger
 - ROUTINE: 2/24 = 0.08
 - URGENT: 14/39 = 0.36
 
+Messages the administrative override would touch (an INSUFFICIENT label on them is treated as ROUTINE), by gold label. Safe only if every one is ROUTINE: {'EMERGENCY': 0, 'ROUTINE': 0, 'INSUFFICIENT': 0, 'URGENT': 0}
+
 Script detection: 135/135 = 1.000; errors by (true, detected): none
 
 ## test (315 renderings)
@@ -83,5 +87,7 @@ Share of renderings with at least one tag, by gold urgency label (a sound tagger
 - INSUFFICIENT: 1/54 = 0.02
 - ROUTINE: 8/66 = 0.12
 - URGENT: 18/69 = 0.26
+
+Messages the administrative override would touch (an INSUFFICIENT label on them is treated as ROUTINE), by gold label. Safe only if every one is ROUTINE: {'EMERGENCY': 0, 'ROUTINE': 3, 'URGENT': 0, 'INSUFFICIENT': 0}
 
 Script detection: 315/315 = 1.000; errors by (true, detected): none

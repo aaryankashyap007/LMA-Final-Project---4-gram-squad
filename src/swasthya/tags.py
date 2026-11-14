@@ -132,14 +132,18 @@ INTENTS = {
         "en": ["cancel", "call off"], "deva": ["रद्द", "कैंसिल"], "hinglish": ["cancel", "radd", "rad kar"]}},
     "reschedule": {"strong": {
         "en": ["reschedule", "postpone", "change the time", "change my appointment", "another slot",
-               "different time", "move my appointment"],
-        "deva": ["समय बदल", "दूसरा समय", "दूसरी तारीख", "आगे बढ़ा"],
-        "hinglish": ["reschedule", "time badal", "dusra time", "dusra slot", "aage badha", "postpone"]}},
+               "different time", "move my appointment", "another day", "different day", "other day"],
+        "deva": ["समय बदल", "दूसरा समय", "दूसरी तारीख", "आगे बढ़ा", "किसी और दिन", "दूसरे दिन"],
+        "hinglish": ["reschedule", "time badal", "dusra time", "dusra slot", "aage badha", "postpone", "dusre din",
+                     "dusra din", "kisi aur din"]}},
     "appointment_info": {"strong": {
-        "en": ["my appointment", "when is my", "what time is my", "appointment status", "appointment details"],
-        "deva": ["मेरा अपॉइंटमेंट", "मेरी अपॉइंटमेंट", "मेरा अपॉइन्टमेंट", "मेरी अपॉइन्टमेंट"],
+        "en": ["my appointment", "my appointments", "my upcoming appointments", "upcoming appointments",
+               "when is my", "what time is my", "appointment status", "appointment details"],
+        "deva": ["मेरा अपॉइंटमेंट", "मेरी अपॉइंटमेंट", "मेरा अपॉइन्टमेंट", "मेरी अपॉइन्टमेंट", "मेरे अपॉइंटमेंट",
+                 "आने वाले अपॉइंटमेंट"],
         "hinglish": ["mera appointment", "meri appointment", "mera slot", "appointment kab",
-                     "appointment kitne baje"]}},
+                     "appointment kitne baje", "mere appointments", "mere upcoming appointments",
+                     "upcoming appointments"]}},
     "clinic_info": {"strong": {
         "en": ["opening hours", "open on", "opening time", "closing time", "what time does the clinic",
                "when does the clinic", "clinic open", "clinic closed", "where is the clinic", "clinic address",
@@ -147,7 +151,8 @@ INTENTS = {
                "directions", "parking"],
         "deva": ["खुलता", "खुला", "बंद होता", "क्लिनिक का पता", "पता क्या", "फीस", "कितना खर्च", "कितने पैसे",
                  "क्या लाना", "कौन से कागज", "कागजात"],
-        "hinglish": ["kab khulta", "kab tak khula", "kab band", "timing", "address", "fees", "fee", "kitne paise",
+        "hinglish": ["kab khulta", "kab tak khula", "kab band", "baje khulta", "khulta hai", "khula rehta",
+                     "khula hai", "baje khul", "timing", "address", "fees", "fee", "kitne paise",
                      "kitna kharcha", "kya lana", "kaun se kagaz", "kagaz"]}},
     "medical_advice": {"strong": {
         "en": ["what medicine", "which medicine", "what tablet", "which tablet", "what drug", "what should i take",
@@ -308,14 +313,69 @@ def intents(text, flags=None):
     return sorted(found) or ["other"]
 
 
+# ---- administrative-only messages -------------------------------------------------------------------------
+# G1 was trained on symptom messages, so it calls plain administrative requests ("cancel my appointment", "clinic
+# hours") INSUFFICIENT: 79% of them as a first message on the probe, every Devanagari one. `administrative_only`
+# identifies those messages so the orchestrator can treat an INSUFFICIENT label on them as ROUTINE. It is deliberately
+# strict, because D3 contains genuinely vague requests that look administrative ("Appointment for heart issue",
+# "Depression doctor appointment", "Doctor appointment required") and those must keep their INSUFFICIENT label:
+#   - only administrative intents, no red flag, no symptom, no medical-advice request;
+#   - no clinical vocabulary at all (an area of medicine, "problem", "worried", ...);
+#   - a booking needs concrete specifics (a named doctor, a date or a time); cancel, reschedule, my-appointments
+#     and clinic-information requests do not seek care, so they need none.
+ADMIN_INTENTS = {"book_appointment", "cancel_appointment", "reschedule", "appointment_info", "clinic_info"}
+NOT_SEEKING_CARE = {"cancel_appointment", "reschedule", "appointment_info", "clinic_info"}
+CLINICAL_AREA = {
+    "en": ["heart", "cardiac", "cardio", "maternity", "pregnant", "pregnancy", "depression", "depressed", "psychiatrist",
+           "psychiatric", "mental", "cancer", "diabetes", "diabetic", "kidney", "liver", "lung", "asthma", "epilepsy",
+           "fracture", "skin", "eye", "ear", "throat", "stomach", "issue", "issues", "problem", "problems", "worried",
+           "worry", "sick", "unwell", "strange", "wrong", "symptom", "symptoms", "disease", "illness", "infection",
+           "blood pressure", "bp", "sugar", "baby", "child", "newborn", "feel", "feeling", "treatment", "medicine"],
+    "deva": ["दिल", "हृदय", "हार्ट", "मातृत्व", "गर्भ", "अवसाद", "डिप्रेशन", "मनोचिकित्सक", "मानसिक", "कैंसर", "मधुमेह",
+             "शुगर", "किडनी", "फेफड़े", "अस्थमा", "हड्डी", "त्वचा", "आंख", "कान", "गला", "पेट", "समस्या", "परेशानी",
+             "चिंता", "बीमार", "बीमारी", "लक्षण", "संक्रमण", "बच्चा", "बच्चे", "इलाज", "दवा", "दवाई"],
+    "hinglish": ["dil", "heart", "bimari", "bimar", "problem", "pareshani", "chinta", "ghabrahat", "sugar", "bp",
+                 "cancer", "kidney", "pet", "aankh", "kaan", "gala", "skin", "depression", "maternity", "tabiyat",
+                 "lakshan", "bachcha", "bachche", "ilaj", "dawa", "dawai"]}
+_CLINICAL = _compile(_all_terms(CLINICAL_AREA))
+_DAYS = ("monday tuesday wednesday thursday friday saturday sunday tomorrow today tonight morning afternoon evening "
+         "kal aaj subah dopahar shaam parso somvar mangalvar budhvar guruvar shukravar shanivar ravivar "
+         "january february march april may june july august september october november december").split()
+_DEVA_DAYS = ["कल", "आज", "सुबह", "दोपहर", "शाम", "परसों", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार",
+              "रविवार", "जनवरी", "फरवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितंबर", "अक्टूबर",
+              "नवंबर", "दिसंबर"]
+_WHEN = {for_match(w) for w in _DAYS + _DEVA_DAYS}
+_TITLES = {"dr", "डॉ", "डा"}
+
+
+def _has_specifics(t):
+    """A named doctor ("Dr. Rao"), a date or part of the day, or any number."""
+    toks = t.split()
+    return (any(w in _WHEN or any(c.isdigit() for c in w) for w in toks)
+            or any(w in _TITLES and i + 1 < len(toks) for i, w in enumerate(toks)))
+
+
+def administrative_only(text, flags=None, ints=None):
+    flags = red_flags(text) if flags is None else flags
+    ints = set(intents(text, flags) if ints is None else ints)
+    if flags or not ints or not ints <= ADMIN_INTENTS:        # any symptom, advice request or other intent blocks it
+        return False
+    t = for_match(text)
+    if _hits(_CLINICAL, t, negation=False):
+        return False
+    return bool(ints & NOT_SEEKING_CARE) or _has_specifics(t)
+
+
 @dataclass
 class MessageInfo:
     script: str
     red_flags: List[str] = field(default_factory=list)
     intents: List[str] = field(default_factory=list)
     for_model: str = ""
+    administrative: bool = False
 
 
 def analyse_message(text):
     flags = red_flags(text)
-    return MessageInfo(detect_script(text), flags, intents(text, flags), for_model(text))
+    ints = intents(text, flags)
+    return MessageInfo(detect_script(text), flags, ints, for_model(text), administrative_only(text, flags, ints))

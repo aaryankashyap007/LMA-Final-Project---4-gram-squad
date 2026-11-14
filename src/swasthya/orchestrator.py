@@ -175,12 +175,13 @@ def scenario_gate_inputs(scenarios, gate_context=1):
 
 class Orchestrator:
     def __init__(self, arm: Arm, clinic: Clinic, session: Session, llm, gate=None, gate_context=3,
-                 max_followups=2, max_tool_rounds=4, token_budget=20000, verifier=None):
+                 max_followups=2, max_tool_rounds=4, token_budget=20000, verifier=None, admin_override=True):
         if arm.gate in ("g1", "v0") and gate is None:
             raise ValueError(f"arm {arm.name} needs a gate")
         self.arm, self.clinic, self.session, self.llm, self.gate = arm, clinic, session, llm, gate
         self.gate_context, self.max_followups = gate_context, max_followups
         self.judged_routine = False        # once the gate has said ROUTINE, vague follow-ups no longer block
+        self.admin_override = admin_override   # INSUFFICIENT on a plainly administrative message -> ROUTINE
         self.max_tool_rounds, self.token_budget, self.verifier = max_tool_rounds, token_budget, verifier
         self.executor = Executor(clinic, session, guard_on=arm.guard)
         self.messages = [{"role": "system", "content": build_system_prompt(arm, session, clinic)}]
@@ -207,22 +208,25 @@ class Orchestrator:
         offered, note = offered_tools(self.arm), None
         if self.arm.gate in ("g1", "v0"):
             res = self.gate.predict(gate_input(self.transcript, self.gate_context))
+            label = res.label
+            if label == "INSUFFICIENT" and self.admin_override and info.administrative:
+                label = "ROUTINE"     # G1 calls plain administrative requests INSUFFICIENT (see tags.administrative_only)
             log = {"turn": self.session.turn, "label": res.label, "probs": res.probs, "source": res.source,
                    "sticky_routine": False, "script": info.script, "red_flags": info.red_flags,
-                   "intents": info.intents}
+                   "intents": info.intents, "override": "administrative" if label != res.label else None}
             self.gate_log.append(log)
             if res.outage:                                   # fail closed
                 self.flags["gate_outage"] = True
                 return self._escalate("UNCLEAR", "gate_outage", user_text)
-            if res.label in ("EMERGENCY", "URGENT"):         # always acts, even after a ROUTINE judgement
-                return self._escalate(res.label, "gate", user_text)
-            if res.label == "INSUFFICIENT" and not self.judged_routine:
+            if label in ("EMERGENCY", "URGENT"):             # always acts, even after a ROUTINE judgement
+                return self._escalate(label, "gate", user_text)
+            if label == "INSUFFICIENT" and not self.judged_routine:
                 self.followups += 1
                 if self.followups > self.max_followups:
                     return self._escalate("UNCLEAR", "gate", user_text)
                 offered = [t for t in offered if t in TOOLS and not TOOLS[t].mutating]
                 note = INSUFFICIENT_NOTE
-            elif res.label == "INSUFFICIENT":                # vague non-clinical turn after a ROUTINE case
+            elif label == "INSUFFICIENT":                    # vague non-clinical turn after a ROUTINE case
                 log["sticky_routine"] = True
             else:
                 self.judged_routine, self.followups = True, 0
