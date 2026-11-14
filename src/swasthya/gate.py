@@ -12,12 +12,12 @@ as unsafe (hand-off) and flags the episode as a gate outage. Failures are never 
 import hashlib
 import json
 import math
-import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
 from . import prompts
+from .normaliser import for_model
 from .schema import LABELS
 
 UNAVAILABLE = "UNAVAILABLE"
@@ -46,8 +46,9 @@ def prompted_checkpoint_id(model_name, shots=(), name="v0"):
 
 
 def normalise(text):
-    """NFC + collapsed whitespace; the only normalisation applied before the gate and before cache lookup."""
-    return " ".join(unicodedata.normalize("NFC", text or "").split())
+    """The conservative model-facing normalisation (normaliser.for_model) applied before the gate and before cache
+    lookup. It keeps line breaks, which separate the speakers in the transcript input the probe validated."""
+    return for_model(text)
 
 
 @dataclass

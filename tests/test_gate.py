@@ -27,8 +27,10 @@ def test_decide_argmax_and_threshold():
     assert decide([0.3, 0.1, 0.5, 0.1], emergency_threshold=0.5) == "ROUTINE"
 
 
-def test_normalise_collapses_whitespace_and_unicode():
-    assert normalise("  chest   pain \n now ") == "chest pain now"
+def test_normalise_collapses_whitespace_within_lines_and_keeps_line_breaks():
+    assert normalise("  chest   pain \n now ") == "chest pain\nnow"
+    transcript = "Patient: Dr Rao\nAssistant: Shall I book Dr. Rao?\nPatient: haan ji"
+    assert normalise(transcript) == transcript                              # speaker structure survives
     assert normalise("café") == normalise("café")                 # composed == decomposed
     assert normalise(None) == ""
 
@@ -43,6 +45,13 @@ def test_cache_hit_avoids_backend_and_survives_restart(tmp_path):
     assert r2.source == "cache" and len(b.calls) == 1
     g2 = CachedGate(FakeBackend(), "g1-s13", path)                         # new process, same cache file
     assert g2.predict("chest pain").source == "cache" and g2.predict("chest pain").label == "EMERGENCY"
+
+
+def test_backend_receives_the_transcript_with_its_line_breaks(tmp_path):
+    transcript = "Patient: Mummy ko chakkar aa rahe hain\nAssistant: Kya woh hosh mein hain?\nPatient: nahi"
+    b = FakeBackend()
+    CachedGate(b, "c", tmp_path / "g.jsonl").predict(transcript)
+    assert b.calls == [[transcript]]                                        # same text the Kaggle probe scored
 
 
 def test_checkpoint_id_separates_caches(tmp_path):
