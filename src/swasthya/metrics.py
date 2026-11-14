@@ -79,3 +79,21 @@ def cross_script_recall_gap(y_true, y_pred, scripts):
         recs[s] = emergency_recall([y_true[i] for i in idx], [y_pred[i] for i in idx])
     vals = [v for v in recs.values() if v == v]
     return (max(vals) - min(vals)) if vals else float("nan"), recs
+
+
+def recall_at_overtriage(y_true, p_emergency, alpha):
+    """Emergency recall when EMERGENCY is predicted iff P(EMERGENCY) >= t, with t the smallest threshold whose
+    over-triage is <= alpha (same rule as scripts/h1_matched_overtriage.py).
+    Returns (recall, threshold, over_triage); NaNs if the split lacks emergencies or non-emergencies."""
+    p = np.asarray(p_emergency, dtype=float)
+    is_em = np.array([y == "EMERGENCY" for y in y_true])
+    if not is_em.any() or is_em.all():
+        return float("nan"), float("nan"), float("nan")
+    neg = p[~is_em]
+    t = 1.0 + 1e-9
+    for cand in np.unique(np.concatenate([p, [1.0 + 1e-9]])):
+        if (neg >= cand).mean() <= alpha:
+            t = float(cand)
+            break
+    pred = p >= t
+    return float(pred[is_em].mean()), t, float(pred[~is_em].mean())

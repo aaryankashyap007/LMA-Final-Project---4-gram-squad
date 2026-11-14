@@ -30,7 +30,7 @@ def main():
     shutil.copytree(ROOT / "src/swasthya", out / "src/swasthya", ignore=shutil.ignore_patterns("__pycache__"))
     shutil.copytree(ROOT / "kaggle", out / "kaggle", ignore=shutil.ignore_patterns("__pycache__", ".gitkeep"))
     (out / "data/d3_triage/rendered").mkdir(parents=True)
-    for p in need:
+    for p in need + sorted((ROOT / "data/d3_triage/rendered").glob("d3_train_*.jsonl")):   # + noisy variants
         shutil.copy(p, out / "data/d3_triage/rendered" / p.name)
     if a.kaggle_user:
         (out / "dataset-metadata.json").write_text(json.dumps(

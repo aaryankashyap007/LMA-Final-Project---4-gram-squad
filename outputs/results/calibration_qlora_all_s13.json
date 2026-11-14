@@ -1,0 +1,15 @@
+{
+  "temperature": 3.0924949471099183,
+  "ece_dev_before": 0.20694922208786004,
+  "ece_dev_after": 0.09856681394174902,
+  "ece_test_before": 0.1420308714821225,
+  "ece_test_after": 0.07328840462889762,
+  "nll_test_before": 0.7232308920936685,
+  "nll_test_after": 0.41490053912788477,
+  "run": "qlora_all_s13",
+  "temperature_ci95_dev_cases": [
+    2.5009550134872915,
+    3.8224035926890254
+  ],
+  "n_dev_cases": 45
+}

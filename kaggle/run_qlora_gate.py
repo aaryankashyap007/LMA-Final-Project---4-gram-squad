@@ -6,6 +6,12 @@ cross-entropy over those 4 (same read-out as the prompted V0, so V0 vs G1 is a c
 Kaggle example:
   python run_qlora_gate.py --train_scripts all --seed 13 --name qlora
 Ablation (cross-script transfer):  python run_qlora_gate.py --train_scripts en --seed 13 --name qlora
+Matched-size control (300 rows, every case in ONE script, all scripts present):
+  python run_qlora_gate.py --train_scripts mixed1 --seed 13 --name qlora
+Early stopping on dev (emergency recall at 10% over-triage, ties by macro-F1; restores the best epoch):
+  python run_qlora_gate.py --train_scripts all --seed 13 --name qlora_es --early_stop
+Noisy-romanisation training copy (make it with scripts/augment_train.py):
+  python run_qlora_gate.py --train_scripts all --seed 13 --name qlora_noisy --train_file d3_train_noisy.jsonl
 Quick environment check: python run_qlora_gate.py --smoke
 """
 import argparse
@@ -31,8 +37,9 @@ from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training  # 
 from transformers import get_linear_schedule_with_warmup  # noqa: E402
 
 from swasthya import kio, prompts  # noqa: E402
-from swasthya.metrics import emergency_recall  # noqa: E402
-from swasthya.schema import LABEL2ID, SCRIPTS  # noqa: E402
+from swasthya.metrics import emergency_recall, macro_f1, recall_at_overtriage  # noqa: E402
+from swasthya.schema import LABEL2ID  # noqa: E402
+from swasthya.training import BestTracker, select_train_rows  # noqa: E402
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from run_llm_prompted import load_llm  # noqa: E402
@@ -64,6 +71,13 @@ def main():
     ap.add_argument("--max_len", type=int, default=768)
     ap.add_argument("--emerg_weight", type=float, default=1.0)
     ap.add_argument("--save_adapter", action="store_true")
+    ap.add_argument("--early_stop", action="store_true",
+                    help="after each epoch score dev (emergency recall at --budget over-triage, then macro-F1) "
+                         "and restore the best epoch before predicting")
+    ap.add_argument("--patience", type=int, default=0, help="with --early_stop: stop after N epochs without gain")
+    ap.add_argument("--budget", type=float, default=0.10, help="dev over-triage budget for --early_stop")
+    ap.add_argument("--train_file", default="d3_train.jsonl",
+                    help="training jsonl inside --data_dir (e.g. d3_train_noisy.jsonl from scripts/augment_train.py)")
     ap.add_argument("--data_dir", default=os.path.join(ROOT, "data/d3_triage/rendered"))
     ap.add_argument("--out", default="/kaggle/working/outputs" if os.path.isdir("/kaggle/working") else "outputs/raw")
     ap.add_argument("--smoke", action="store_true")
@@ -71,9 +85,9 @@ def main():
 
     dev = "cuda" if torch.cuda.is_available() else "cpu"
     random.seed(a.seed); np.random.seed(a.seed); torch.manual_seed(a.seed); torch.cuda.manual_seed_all(a.seed)
-    scripts = SCRIPTS if a.train_scripts == "all" else [a.train_scripts]
-    data = {s: kio.load_split(a.data_dir, s) for s in ("train", "dev", "test")}
-    train = [r for r in data["train"] if r["script"] in scripts]
+    data = {s: kio.load_split(a.data_dir, s) for s in ("dev", "test")}
+    data["train"] = kio.read_jsonl(os.path.join(a.data_dir, a.train_file))
+    train = select_train_rows(data["train"], a.train_scripts, a.seed)     # all | en | deva | hinglish | mixed1
     if a.smoke:
         a.name, a.epochs = "smoke_" + a.name, 1
         train = train[:16]
@@ -104,6 +118,8 @@ def main():
     w = torch.tensor([a.emerg_weight, 1.0, 1.0, 1.0], device=dev)
     g = torch.Generator().manual_seed(a.seed)
     log, t0 = [], time.time()
+    tracker, best_state = BestTracker(a.patience), None
+    trainable = {n: p for n, p in model.named_parameters() if p.requires_grad}
     for ep in range(a.epochs):
         model.train()
         perm = torch.randperm(len(train), generator=g).tolist()
@@ -122,16 +138,36 @@ def main():
         pd = predict(model, tok, data["dev"], letter_ids, dev, a.max_len)
         pr = [r["pred"] for r in kio.pred_rows(data["dev"], pd)]
         rec = emergency_recall([r["label"] for r in data["dev"]], pr)
-        log.append({"epoch": ep + 1, "train_loss": tot / len(train), "dev_emergency_recall": rec,
-                    "elapsed_s": round(time.time() - t0)})
-        print(f"[{name}] epoch {ep + 1}/{a.epochs} loss {tot / len(train):.4f} dev_emRecall {rec:.3f} "
+        entry = {"epoch": ep + 1, "train_loss": tot / len(train), "dev_emergency_recall": rec,
+                 "elapsed_s": round(time.time() - t0)}
+        extra = ""
+        if a.early_stop:
+            y_dev = [r["label"] for r in data["dev"]]
+            at_budget = recall_at_overtriage(y_dev, [p[0] for p in pd], a.budget)[0]
+            mf1 = macro_f1(y_dev, pr)
+            entry.update({"dev_recall_at_budget": at_budget, "dev_macro_f1": mf1})
+            if tracker.update(ep + 1, at_budget, mf1):
+                best_state = {n: p.detach().cpu().clone() for n, p in trainable.items()}
+            extra = f" recall@{a.budget:.0%}over {at_budget:.3f} mF1 {mf1:.3f} (best epoch {tracker.best_epoch})"
+        log.append(entry)
+        print(f"[{name}] epoch {ep + 1}/{a.epochs} loss {tot / len(train):.4f} dev_emRecall {rec:.3f}{extra} "
               f"({time.time() - t0:.0f}s)", flush=True)
+        if a.early_stop and tracker.should_stop:
+            print(f"[{name}] no improvement for {a.patience} epoch(s): stopping", flush=True)
+            break
+    if a.early_stop and best_state is not None:
+        for n, p in trainable.items():
+            p.data.copy_(best_state[n].to(p.device))
+        print(f"[{name}] restored best epoch {tracker.best_epoch}", flush=True)
     for split in ("dev", "test"):
         probs = predict(model, tok, data[split], letter_ids, dev, a.max_len)
         kio.write_jsonl(os.path.join(run_dir, f"preds_{split}.jsonl"), kio.pred_rows(data[split], probs))
     cfg = {"system": a.name, "model": a.model, "train_scripts": a.train_scripts, "seed": a.seed, "epochs": a.epochs,
            "lr": a.lr, "bs": a.bs, "accum": a.accum, "lora_r": a.r, "emerg_weight": a.emerg_weight,
-           "n_train": len(train), "shots": 0, "bits": a.bits, "seconds": round(time.time() - t0, 1)}
+           "n_train": len(train), "shots": 0, "bits": a.bits, "seconds": round(time.time() - t0, 1),
+           "train_file": a.train_file, "early_stop": a.early_stop,
+           "best_epoch": tracker.best_epoch if a.early_stop else None,
+           "budget": a.budget if a.early_stop else None, "epochs_run": len(log)}
     json.dump(cfg, open(os.path.join(run_dir, "config.json"), "w"), indent=2)
     json.dump(log, open(os.path.join(run_dir, "log.json"), "w"), indent=2)
     if a.save_adapter:

@@ -43,6 +43,39 @@ KD = KD[0]; print(KD)
 Download `outputs.zip` from the notebook's **Output** tab (after "Save Version" -> "Save & Run All", or from the file browser on the right).
 Kaggle sessions die after ~9-12 h and you get ~30 GPU-h/week: run in the order above and zip after every cell group.
 
+## 2b. Remaining triage experiments (in priority order; each G1 run is ~30-60 min on a T4, quota ~30 GPU-h/week)
+Smoke-test first (`--smoke`), and rebuild + re-upload the bundle (`make_kaggle_bundle.py`) so it contains the new flags.
+```
+# cell A: matched-size control. 300 rows, every case in ONE script, all scripts present (compare with S2 and the
+# English-only / Hinglish-only runs: separates script coverage from data quantity). 3 seeds.
+!python $KD/run_qlora_gate.py --train_scripts mixed1 --seed 13 --name qlora
+!python $KD/run_qlora_gate.py --train_scripts mixed1 --seed 42 --name qlora
+!python $KD/run_qlora_gate.py --train_scripts mixed1 --seed 2026 --name qlora
+
+# cell B: early stopping on dev (recall at 10% over-triage, ties by macro-F1; restores the best epoch). 3 seeds.
+!python $KD/run_qlora_gate.py --train_scripts all --seed 13 --name qlora_es --early_stop
+!python $KD/run_qlora_gate.py --train_scripts all --seed 42 --name qlora_es --early_stop
+!python $KD/run_qlora_gate.py --train_scripts all --seed 2026 --name qlora_es --early_stop
+
+# cell C: noisy-romanisation training copy (python scripts/augment_train.py first, then rebuild the bundle). 3 seeds.
+!python $KD/run_qlora_gate.py --train_scripts all --seed 13 --name qlora_noisy --train_file d3_train_noisy.jsonl
+!python $KD/run_qlora_gate.py --train_scripts all --seed 42 --name qlora_noisy --train_file d3_train_noisy.jsonl
+!python $KD/run_qlora_gate.py --train_scripts all --seed 2026 --name qlora_noisy --train_file d3_train_noisy.jsonl
+
+# cell D: more seeds for the single-script ablations (G1 has only en s13 and hinglish s13; Devanagari-only never ran)
+!python $KD/run_qlora_gate.py --train_scripts en --seed 42 --name qlora
+!python $KD/run_qlora_gate.py --train_scripts en --seed 2026 --name qlora
+!python $KD/run_qlora_gate.py --train_scripts hinglish --seed 42 --name qlora
+!python $KD/run_qlora_gate.py --train_scripts hinglish --seed 2026 --name qlora
+!python $KD/run_qlora_gate.py --train_scripts deva --seed 13 --name qlora
+!python $KD/run_qlora_gate.py --train_scripts deva --seed 42 --name qlora
+!python $KD/run_qlora_gate.py --train_scripts deva --seed 2026 --name qlora
+```
+Zip after every cell (`cd /kaggle/working && zip -rq outputs.zip outputs`) and download, because sessions die.
+Rename any run folder that would collide with an existing name in `outputs/raw/` before scoring (the early-stop and
+noisy runs have their own `--name`, so they do not collide). Then on your PC: `python scripts/score_all.py`.
+The noisy and early-stop runs are compared against the plain all-script runs, same seeds.
+
 ## 3. Back on your PC
 ```bash
 unzip -q ~/Downloads/outputs.zip -d /tmp/k && cp -r /tmp/k/outputs/* outputs/raw/
@@ -55,7 +88,10 @@ Then add rows to `docs/EXPERIMENT_LOG.md` and commit `outputs/results/` (raw pre
 |----|--------|-------------|
 | B0 | keyword lexicon | - |
 | B1 | MuRIL, trained on all scripts, 3 seeds | baseline |
-| A1 | MuRIL trained on en / deva / hinglish only | cross-script transfer (ablation) |
+| S1 | MuRIL trained on en / deva / hinglish only | cross-script transfer (ablation) |
 | V0 / V0-fs | Qwen2.5-3B prompted, 0 / 8 shots | no training |
 | G1 | Qwen2.5-3B + QLoRA, all scripts | our gate |
-| A2 | G1 trained on en only | cross-script transfer (ablation) |
+| S2 | G1 trained on en only | cross-script transfer (ablation) |
+
+Naming: S1/S2 are the script-transfer ablations above. They were called A1/A2 before; A0/A1/+Gate/+Guard/Full are
+now only the agent arms of the 2x2 experiment (proposal Table 1, `swasthya.orchestrator.ARMS`).
