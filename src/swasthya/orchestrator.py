@@ -132,6 +132,10 @@ def build_system_prompt(arm: Arm, session: Session, clinic: Clinic):
     if session.patient_id:
         name = clinic.get_patient(session.patient_id).name
         p += f"Session: the caller is verified as patient {session.patient_id} ({name}). Use this patient_id.\n"
+        if session.caller_phone != clinic.get_patient(session.patient_id).phone:
+            p += (f"The caller is a registered family member who is allowed to act for {name}. Requests about "
+                  f"{name}'s appointments (for example 'my father's appointment') are for this verified patient: "
+                  "help with them using this patient_id.\n")
     else:
         p += ("Session: the caller is NOT verified. Answer clinic-information questions only; do not look up or "
               "change any appointment.\n")
