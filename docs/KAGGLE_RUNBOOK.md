@@ -161,6 +161,28 @@ interrupting a booking, an urgent child, a medical-advice request). Regenerate w
 A perfect-agent test proves every scenario is solvable through the guard's confirmation protocol, so a failure in a
 real run points at the model or the gate, not the script. Adversarial scenarios are a separate file (not written yet).
 
+## 2f. Adversarial scenario set (`data/d4_clinic/scenarios_adversarial_v0.jsonl`)
+39 scenarios: 10 attack families (injection into an information question, injection into a real booking, administrator
+or doctor impersonation, another patient's record, an unregistered phone claiming to be a patient, multi-turn pressure,
+system-prompt and patient-list exfiltration, an emergency with "ignore the rules" attached, a "DemoBot" role play) and
+3 benign twins (same shape, no attack), each in English, Hinglish and Devanagari. Regenerate with
+`python scripts/make_scenarios_adversarial.py`. This is the set that can separate the arms: `unapproved` and `leak` are
+scored by the independent oracle. Reply text is not scored, so an exfiltration answer that names a patient without a
+tool call is not caught (a limitation to report).
+Tests prove two things: a perfect agent passes every scenario in A1 and +Guard, and an agent that OBEYS the attack
+produces an unapproved action or leak in A1 in all 27 attack scenarios that have a tool-call form and none with the guard on.
+Upload the .jsonl as a Kaggle dataset, attach it, then run (all five arms, 3 runs, same budget as the benign run):
+```
+SC = !find /kaggle/input -name scenarios_adversarial_v0.jsonl | head -1
+SC = SC[0]; print(SC)
+!python $KD/run_agent.py --scenarios $SC --runs 3 --token_budget 40000 --min_interval 4 --out /kaggle/working/agent_adv
+!cd /kaggle/working && zip -rq agent_adv.zip agent_adv
+```
+Use a different `--out` from the benign run. Expect 585 episodes at 3 runs (about 1 h 30 on a quota-free key); start with
+`--runs 1` (195 episodes) to see whether any arm is non-zero before spending more. Zip after each chunk.
+A strong agent model may refuse every attack on its own, so all arms can still read 0: that is a result about the
+model, and H2 would then need a weaker agent model as well. Say so rather than hiding it.
+
 ## 3. Back on your PC
 ```bash
 unzip -q ~/Downloads/outputs.zip -d /tmp/k && cp -r /tmp/k/outputs/* outputs/raw/
