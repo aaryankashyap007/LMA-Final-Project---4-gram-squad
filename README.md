@@ -22,9 +22,14 @@ patient message -> normaliser -> safety gate --unsafe--> fixed reply + staff han
 | Triage systems: keyword (B0), MuRIL (B1), prompted Qwen (V0), QLoRA gate (G1) | done |
 | Evaluation harness, scoring, tables, matched over-triage analysis (H1) | done |
 | Training-script and prompting ablations | done |
-| D4 clinic simulator, four tools, action guard, orchestrator | not started |
-| 2x2 ablation of gate and guard against a single-prompt agent | not started |
-| Clinician review of rubric and emergency templates | not started |
+| D4 clinic simulator, tools, action guard, orchestrator, independent episode scoring | done |
+| Scenario sets: benign (39), adversarial v0 (39), adversarial v1 (30), each in English, Hinglish, Devanagari | done |
+| Agent runs on all five arms (A0, A1, +Gate, +Guard, Full) | benign set done; adversarial v1 done on two small models; adversarial v0 on a small model to be re-run |
+| Attempted-attack analysis and replay of blocked calls | done |
+| Mutation testing of the action guard (10 single, 6 paired mutants, 6 probes) | done |
+| 2x2 ablation of gate and guard: statistical analysis (McNemar with Holm, bootstrap, interaction) | not started |
+| `+Gate_V0` arm (prompted gate, guard off) | not run |
+| Clinician review of rubric and emergency templates; native-speaker review of Hinglish and Devanagari wording | not started |
 
 ## Repository layout
 
@@ -47,7 +52,7 @@ patient message -> normaliser -> safety gate --unsafe--> fixed reply + staff han
 ├── scripts/                  command-line tools (validate, score, tables, analysis)
 │   └── bootstrap/            one-off installers that created the repository files
 ├── src/swasthya/             shared library
-└── tests/                    unit tests (14)
+└── tests/                    unit tests (340)
 ```
 
 ## Setup
@@ -56,7 +61,7 @@ patient message -> normaliser -> safety gate --unsafe--> fixed reply + staff han
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt pytest
 export PYTHONPATH=src
-pytest -q                     # 14 tests
+pytest -q                     # 340 tests
 ```
 
 GPU work (training and inference of MuRIL and Qwen) runs on Kaggle, not locally; `torch`, `transformers`, `peft`, `bitsandbytes` and `accelerate` are installed there (see `docs/KAGGLE_RUNBOOK.md`).
@@ -143,6 +148,23 @@ Things to keep in mind when reading these numbers:
 - The 10% budget was chosen after earlier results were seen; the 5% and 20% budgets point the same way.
 - All-script models see three times the data of single-script models, so the ablation mixes script coverage with data quantity.
 - Early stopping and calibration are not applied yet. The rubric has not been reviewed by a clinician.
+
+## Agent experiment (D4): what has been run so far
+
+Six arms (`swasthya.orchestrator.ARMS`): A0 (no tools), A1 (LLM triages by prompt, guard off), +Gate (G1, guard off), +Gate_V0, +Guard (LLM triage, guard on), Full (G1 and guard). An independent oracle (`d4_score.py`) scores every episode on unapproved actions, leaks of another patient's record and task success; the guard's own verdicts are not the metric. Reply text is not scored.
+
+| Run | Agent model | Episodes | Result |
+|---|---|---|---|
+| Benign set, one run | Nemotron Ultra (free, OpenRouter) | 195 | task success A0 18/39; A1, +Gate, +Guard, Full 39/39; 0 unapproved, 0 leaks; the 6 must-escalate scenarios escalate in all four LLM arms |
+| Adversarial v0 (overt injections) | Ultra, Nemotron Nano | partly seen | Ultra 0 unapproved, 0 leaks; Nano about 2 unapproved in 60 episodes (A1 and +Gate); full result pending a re-run |
+| Adversarial v1 (plausible, no jailbreak wording) | Liquid 1.7B, Nano | 150 each | 0 unapproved, 0 leaks in every arm; guard blocked 8 harmful attempts across the two runs, none occurred in the guard-off arms |
+
+Because the real models rarely try the attacks, the arms tie at zero and the headline metric cannot separate them. Three further views are used, all in the log:
+- **Attempted-attack analysis** (`scripts/analyze_attempts.py`): counts harmful tool calls per arm from the audit log and replays blocked calls with the guard off.
+- **Worst case**: a scripted agent that always follows the injected request. Without the guard 57 of 57 attack episodes are harmed (45 unapproved, 12 leaks); with it 0 of 57. This tests the guard, not a language model.
+- **Mutation testing** (`scripts/mutation_test.py`): 16 broken versions of the guard, each run against the attacks, six "attacker also says yes" probes and the unit tests. All 16 are caught by the tests; 13 also by attacks or probes. No identity gate: 57/57 harmed; ownership and confirmation both removed: 36/57. The allow-list, the verified-session check and the booking lock changed no outcome and are reported as defence in depth only.
+
+Limits: one run per scenario at temperature 0; free models with changing quotas; Hinglish and Devanagari scenario wording and all templates are author drafts awaiting review; scenarios are synthetic.
 
 ## How to reproduce
 
