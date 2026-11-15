@@ -8,11 +8,12 @@
 - [x] Scenario sets: benign (39), adversarial v0 (39), adversarial v1 (30)
 - [x] Agent runs on benign and adversarial v1 sets; attempted-attack analysis; scripted worst-case agent
 - [x] Mutation testing of the guard (16 mutants, 6 probes)
+- [x] Adversarial v2 (attacks hidden in tool results) on Nano and Liquid: 0 harmful attempts in 270 episodes
+- [x] 2x2 statistics script and pooled analysis (no significant effect)
 - [x] Adversarial v0 on Nemotron Nano (195 episodes): first real-model separation, A1 and +Gate 2 unapproved, guard arms 0
 ## In progress
 ## Not started
-- [ ] Statistical analysis of the 2x2 (McNemar with Holm, bootstrap, gate x guard interaction); `+Gate_V0` arm decision
-- [ ] Attacks hidden in tool results (a possible way to get real models to attempt harmful calls)
+- [ ] `+Gate_V0` arm: run it or state that it was dropped
 - [ ] Native-speaker review of Hinglish and Devanagari wording; clinician review of rubric and templates
 - [ ] Adapter backup, report tables, push of `agent-lane`
 ## Challenges + mitigations (fill as they happen)

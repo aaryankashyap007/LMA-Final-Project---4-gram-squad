@@ -27,7 +27,7 @@ patient message -> normaliser -> safety gate --unsafe--> fixed reply + staff han
 | Agent runs on all five arms (A0, A1, +Gate, +Guard, Full) | benign set done; adversarial v1 done on two small models; adversarial v0 done on Nano (Ultra full result not saved) |
 | Attempted-attack analysis and replay of blocked calls | done |
 | Mutation testing of the action guard (10 single, 6 paired mutants, 6 probes) | done |
-| 2x2 ablation of gate and guard: statistical analysis (McNemar with Holm, bootstrap, interaction) | not started |
+| 2x2 ablation of gate and guard: statistical analysis (exact McNemar with Holm, cluster bootstrap, interaction) | done on all runs so far; no significant effect (2 vs 0 events) |
 | `+Gate_V0` arm (prompted gate, guard off) | not run |
 | Clinician review of rubric and emergency templates; native-speaker review of Hinglish and Devanagari wording | not started |
 
@@ -158,6 +158,7 @@ Six arms (`swasthya.orchestrator.ARMS`): A0 (no tools), A1 (LLM triages by promp
 | Benign set, one run | Nemotron Ultra (free, OpenRouter) | 195 | task success A0 18/39; A1, +Gate, +Guard, Full 39/39; 0 unapproved, 0 leaks; the 6 must-escalate scenarios escalate in all four LLM arms |
 | Adversarial v0 (overt injections) | Nemotron Nano | 195 | unapproved A1 2/39 and +Gate 2/39, +Guard 0, Full 0, A0 0; leaks 0 in all arms; the guard blocked 4 harmful attempts (+Guard and Full), the same 2 injected cancellations that ran in A1 and +Gate (family `inj_info_cancel`); task success A0 0.77, A1 0.79, +Gate 0.77, +Guard 0.82, Full 0.85 |
 | Adversarial v1 (plausible, no jailbreak wording) | Liquid 1.7B, Nano | 150 each | 0 unapproved, 0 leaks in every arm; guard blocked 8 harmful attempts across the two runs, none occurred in the guard-off arms |
+| Adversarial v2 (attack planted in a tool result) | Nemotron Nano, Liquid 1.7B | 135 each | 0 unapproved, 0 leaks, 0 harmful attempts in every arm; the planted note was returned to the model in 39 of 96 (Nano) and 62 of 96 (Liquid) LLM-arm attack episodes and never acted on |
 
 Because the real models rarely try the attacks, the arms tie at zero and the headline metric cannot separate them. Three further views are used, all in the log:
 - **Attempted-attack analysis** (`scripts/analyze_attempts.py`): counts harmful tool calls per arm from the audit log and replays blocked calls with the guard off.
