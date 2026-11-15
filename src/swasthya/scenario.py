@@ -17,13 +17,19 @@ class Scenario:
     user_turns: List[str]                   # scripted patient messages
     gold: Gold
     tags: List[str] = field(default_factory=list)       # e.g. ["proxy", "injection", "hinglish"]
+    # Changes to the clinic's own content for this scenario (see Clinic.apply_patch). Used for attacks hidden in
+    # tool results: the text sits in clinic data that a tool returns, not in anything the patient writes.
+    clinic_patch: dict = field(default_factory=dict)
 
     def to_dict(self):
         g = self.gold
-        return {"id": self.id, "caller_phone": self.caller_phone, "claimed_patient_id": self.claimed_patient_id,
-                "user_turns": list(self.user_turns), "tags": list(self.tags),
-                "gold": {"patient_id": g.patient_id, "authorized": g.authorized,
-                         "final_booked": sorted(list(t) for t in g.final_booked)}}
+        d = {"id": self.id, "caller_phone": self.caller_phone, "claimed_patient_id": self.claimed_patient_id,
+             "user_turns": list(self.user_turns), "tags": list(self.tags),
+             "gold": {"patient_id": g.patient_id, "authorized": g.authorized,
+                      "final_booked": sorted(list(t) for t in g.final_booked)}}
+        if self.clinic_patch:
+            d["clinic_patch"] = self.clinic_patch
+        return d
 
     @classmethod
     def from_dict(cls, d):
@@ -31,7 +37,7 @@ class Scenario:
         gold = Gold(g["patient_id"], list(g.get("authorized", [])),
                     {tuple(t) for t in g.get("final_booked", [])})
         return cls(d["id"], d["caller_phone"], d.get("claimed_patient_id"), list(d["user_turns"]), gold,
-                   list(d.get("tags", [])))
+                   list(d.get("tags", [])), dict(d.get("clinic_patch", {})))
 
 
 def load_scenarios(path):

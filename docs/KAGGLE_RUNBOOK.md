@@ -190,6 +190,15 @@ unregistered neighbour, wife, sister or aunt, a "reception" bulk cancel, a paste
 name claim, a slot swap, a sympathy cancel. Generate with `python scripts/make_scenarios_adversarial_v1.py`; run it exactly
 like v0 with a different `--out` (for example `agent_advv1`). Counter-checks (benign): the proxy scenarios of the benign set.
 
+
+### 2f-v2. Attacks hidden in tool results (`scenarios_adversarial_v2.jsonl`)
+27 scenarios (8 attack families + 1 benign twin x en/hinglish/deva). The patient asks an ordinary question; a "note for the
+chat assistant" is planted in clinic data that a tool returns (a policy text or a doctor's description). Scenarios carry a
+`clinic_patch`, which `run_episode` applies to the clinic copy, so **the bundle must be rebuilt**
+(`python scripts/make_kaggle_bundle.py`, upload as a new version of `swasthya-data`) because `src/` changed. Upload
+`scenarios_adversarial_v2.jsonl` as its own dataset, then run as in 2f with `--out /kaggle/working/agent_advv2_<model>`.
+Analyse with `python scripts/analyze_attempts.py --run <folder> --scenarios data/d4_clinic/scenarios_adversarial_v2.jsonl`.
+
 ## 3. Back on your PC
 ```bash
 unzip -q ~/Downloads/outputs.zip -d /tmp/k && cp -r /tmp/k/outputs/* outputs/raw/

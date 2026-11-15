@@ -1,0 +1,275 @@
+{
+ "excluded": {},
+ "arms": {
+  "+Gate": {
+   "n": 114,
+   "harm": 2,
+   "harm_ci": [
+    0.0021317494209682204,
+    0.06193869322990114
+   ],
+   "attempt": 2
+  },
+  "+Guard": {
+   "n": 114,
+   "harm": 0,
+   "harm_ci": [
+    0.0,
+    0.031840654083474196
+   ],
+   "attempt": 7
+  },
+  "A0": {
+   "n": 114,
+   "harm": 0,
+   "harm_ci": [
+    0.0,
+    0.031840654083474196
+   ],
+   "attempt": 0
+  },
+  "A1": {
+   "n": 114,
+   "harm": 2,
+   "harm_ci": [
+    0.0021317494209682204,
+    0.06193869322990114
+   ],
+   "attempt": 2
+  },
+  "Full": {
+   "n": 114,
+   "harm": 0,
+   "harm_ci": [
+    0.0,
+    0.031840654083474196
+   ],
+   "attempt": 9
+  }
+ },
+ "primary": {
+  "guard effect, gate off": {
+   "a": "A1",
+   "b": "+Guard",
+   "metric": "harm",
+   "pairs": 114,
+   "families": 38,
+   "rate_a": 0.017543859649122806,
+   "rate_b": 0.0,
+   "diff": 0.017543859649122806,
+   "ci": [
+    0.0,
+    0.05263157894736842
+   ],
+   "only_a": 2,
+   "only_b": 0,
+   "p": 0.5,
+   "fam_only_a": 1,
+   "fam_only_b": 0,
+   "p_family": 1.0,
+   "p_holm": 1.0,
+   "p_family_holm": 1.0
+  },
+  "guard effect, gate on": {
+   "a": "+Gate",
+   "b": "Full",
+   "metric": "harm",
+   "pairs": 114,
+   "families": 38,
+   "rate_a": 0.017543859649122806,
+   "rate_b": 0.0,
+   "diff": 0.017543859649122806,
+   "ci": [
+    0.0,
+    0.05263157894736842
+   ],
+   "only_a": 2,
+   "only_b": 0,
+   "p": 0.5,
+   "fam_only_a": 1,
+   "fam_only_b": 0,
+   "p_family": 1.0,
+   "p_holm": 1.0,
+   "p_family_holm": 1.0
+  },
+  "gate effect, guard off": {
+   "a": "A1",
+   "b": "+Gate",
+   "metric": "harm",
+   "pairs": 114,
+   "families": 38,
+   "rate_a": 0.017543859649122806,
+   "rate_b": 0.017543859649122806,
+   "diff": 0.0,
+   "ci": [
+    0.0,
+    0.0
+   ],
+   "only_a": 1,
+   "only_b": 1,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0,
+   "p_holm": 1.0,
+   "p_family_holm": 1.0
+  },
+  "gate effect, guard on": {
+   "a": "+Guard",
+   "b": "Full",
+   "metric": "harm",
+   "pairs": 114,
+   "families": 38,
+   "rate_a": 0.0,
+   "rate_b": 0.0,
+   "diff": 0.0,
+   "ci": [
+    0.0,
+    0.0
+   ],
+   "only_a": 0,
+   "only_b": 0,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0,
+   "p_holm": 1.0,
+   "p_family_holm": 1.0
+  }
+ },
+ "interaction": {
+  "metric": "harm",
+  "pairs": 114,
+  "value": 0.0,
+  "ci": [
+   0.0,
+   0.0
+  ],
+  "guard_effect_gate_off": 0.017543859649122806,
+  "guard_effect_gate_on": 0.017543859649122806
+ },
+ "attempts": [
+  {
+   "a": "A1",
+   "b": "+Guard",
+   "metric": "attempt",
+   "pairs": 114,
+   "families": 38,
+   "rate_a": 0.017543859649122806,
+   "rate_b": 0.06140350877192982,
+   "diff": -0.043859649122807015,
+   "ci": [
+    -0.09649122807017543,
+    0.0
+   ],
+   "only_a": 1,
+   "only_b": 6,
+   "p": 0.125,
+   "fam_only_a": 0,
+   "fam_only_b": 3,
+   "p_family": 0.25
+  },
+  {
+   "a": "+Gate",
+   "b": "Full",
+   "metric": "attempt",
+   "pairs": 114,
+   "families": 38,
+   "rate_a": 0.017543859649122806,
+   "rate_b": 0.07894736842105263,
+   "diff": -0.06140350877192982,
+   "ci": [
+    -0.12280701754385964,
+    -0.017543859649122806
+   ],
+   "only_a": 0,
+   "only_b": 7,
+   "p": 0.015625,
+   "fam_only_a": 0,
+   "fam_only_b": 5,
+   "p_family": 0.0625
+  }
+ ],
+ "utility": [
+  {
+   "a": "A1",
+   "b": "+Guard",
+   "metric": "success",
+   "pairs": 21,
+   "families": 7,
+   "rate_a": 0.42857142857142855,
+   "rate_b": 0.38095238095238093,
+   "diff": 0.047619047619047616,
+   "ci": [
+    0.0,
+    0.1428571428571429
+   ],
+   "only_a": 1,
+   "only_b": 0,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0
+  },
+  {
+   "a": "+Gate",
+   "b": "Full",
+   "metric": "success",
+   "pairs": 21,
+   "families": 7,
+   "rate_a": 0.38095238095238093,
+   "rate_b": 0.47619047619047616,
+   "diff": -0.09523809523809523,
+   "ci": [
+    -0.19047619047619052,
+    0.0
+   ],
+   "only_a": 0,
+   "only_b": 2,
+   "p": 0.5,
+   "fam_only_a": 0,
+   "fam_only_b": 1,
+   "p_family": 1.0
+  },
+  {
+   "a": "A1",
+   "b": "+Gate",
+   "metric": "success",
+   "pairs": 21,
+   "families": 7,
+   "rate_a": 0.42857142857142855,
+   "rate_b": 0.38095238095238093,
+   "diff": 0.047619047619047616,
+   "ci": [
+    0.0,
+    0.1428571428571429
+   ],
+   "only_a": 1,
+   "only_b": 0,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0
+  },
+  {
+   "a": "+Guard",
+   "b": "Full",
+   "metric": "success",
+   "pairs": 21,
+   "families": 7,
+   "rate_a": 0.38095238095238093,
+   "rate_b": 0.47619047619047616,
+   "diff": -0.09523809523809523,
+   "ci": [
+    -0.19047619047619052,
+    0.0
+   ],
+   "only_a": 0,
+   "only_b": 2,
+   "p": 0.5,
+   "fam_only_a": 0,
+   "fam_only_b": 1,
+   "p_family": 1.0
+  }
+ ]
+}

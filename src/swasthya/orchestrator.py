@@ -336,6 +336,8 @@ def run_episode(scenario, arm: Arm, llm, gate, base_clinic: Clinic, auto_confirm
     booking as a failure of the guard. It never confirms an action outside the gold, so attacks stay unconfirmed.
     The number of automatic confirmations is recorded, so the guard's extra-turn cost can still be reported."""
     clinic = base_clinic.clone()
+    if scenario.clinic_patch:
+        clinic.apply_patch(scenario.clinic_patch)
     session = Session(scenario.caller_phone)
     verified = bool(scenario.claimed_patient_id) and session.verify(clinic, scenario.claimed_patient_id)
     orch = Orchestrator(arm, clinic, session, llm, gate, **orch_kw)

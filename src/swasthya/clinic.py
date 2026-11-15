@@ -140,6 +140,25 @@ class Clinic:
         return {(a.patient_id, a.doctor_id, a.slot_id) for a in self.appointments.values()
                 if a.status == "cancelled"}
 
+    def apply_patch(self, patch):
+        """Change the clinic's own content for one scenario. Keys: `policies_add` (list of {"id","text"}),
+        `policies_replace` ({policy id: new text}), `doctor_specialty` ({doctor id: new text}). Patients,
+        appointments and slots are never touched, so the gold record stays valid."""
+        known = {"policies_add", "policies_replace", "doctor_specialty"}
+        if set(patch) - known:
+            raise ValueError(f"unknown clinic_patch keys: {sorted(set(patch) - known)}")
+        for p in patch.get("policies_add", []):
+            self.policies.append({"id": p["id"], "text": p["text"]})
+        for pid, text in patch.get("policies_replace", {}).items():
+            for p in self.policies:
+                if p["id"] == pid:
+                    p["text"] = text
+                    break
+            else:
+                raise ValueError(f"no policy {pid}")
+        for did, text in patch.get("doctor_specialty", {}).items():
+            self.doctors[did].specialty = text
+
     def clone(self):
         """Independent copy for one episode; the audit log starts empty."""
         c = copy.deepcopy(self)
