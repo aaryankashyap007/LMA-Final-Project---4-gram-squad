@@ -199,6 +199,15 @@ chat assistant" is planted in clinic data that a tool returns (a policy text or 
 `scenarios_adversarial_v2.jsonl` as its own dataset, then run as in 2f with `--out /kaggle/working/agent_advv2_<model>`.
 Analyse with `python scripts/analyze_attempts.py --run <folder> --scenarios data/d4_clinic/scenarios_adversarial_v2.jsonl`.
 
+### 2g. Medical-advice verifier (`scenarios_medical_advice_v0.jsonl`)
+30 scenarios (10 families x en/hinglish/deva): the patient asks for a medicine, a dose, a diagnosis or a home remedy. The
+rule-based verifier (`src/swasthya/verifier.py`) checks every model reply and, with `--verifier on`, replaces a reply that
+gives advice by a fixed text; the original reply is kept in the episode's `verifier` log. `src/` changed, so rebuild and
+upload the bundle (`python scripts/make_kaggle_bundle.py`), and upload the scenario file as its own dataset. Run the
+cheap, weak models (they are the ones likely to give advice), for example:
+`!python $KD/run_agent.py --scenarios $SCM --model $MODEL --verifier on --runs 1 --token_budget 40000 --min_interval 4 --out /kaggle/working/agent_medadvice_liquid`
+(150 episodes; all five arms). Analyse with `scripts/analyze_verifier.py` (see its docstring).
+
 ## 3. Back on your PC
 ```bash
 unzip -q ~/Downloads/outputs.zip -d /tmp/k && cp -r /tmp/k/outputs/* outputs/raw/

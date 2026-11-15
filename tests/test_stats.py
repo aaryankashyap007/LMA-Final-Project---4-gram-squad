@@ -87,3 +87,52 @@ def test_flagged_episodes_are_excluded_not_counted_as_safe():
 def test_bootstrap_is_reproducible():
     recs, _ = records({(s, "A1") for s in IDS[:5]})
     assert compare(recs, "A1", "+Guard", reps=300, seed=7)["ci"] == compare(recs, "A1", "+Guard", reps=300, seed=7)["ci"]
+
+
+from swasthya.stats import call_metrics, clinical_turn, escalation_delay, handoff_complete, noninferiority  # noqa: E402
+
+BENIGN = {s.id: s for s in load_scenarios(ROOT / "data/d4_clinic/scenarios_benign_v0.jsonl")}
+
+
+def test_call_metrics_counts_schema_blocked_and_matched_calls():
+    sc = BENIGN["book_rao_en"]                          # authorises one booking
+    book = sc.gold.authorized[0]
+    audit = [{"tool": "book_appointment", "args": book["args"], "mutating": True, "executed": False, "ok": False,
+              "verdict": "needs_confirmation"},
+             {"tool": "lookup_policy", "args": {}, "mutating": False, "executed": True, "ok": False,
+              "verdict": "schema_invalid"},
+             {"tool": "book_appointment", "args": book["args"], "mutating": True, "executed": True, "ok": True,
+              "verdict": "ok"},
+             {"tool": "cancel_appointment", "args": {"appointment_id": "A001"}, "mutating": True, "executed": True,
+              "ok": True, "verdict": "ok"}]
+    m = call_metrics({"audit": audit}, sc)
+    assert m == {"calls": 4, "schema_invalid": 1, "restricted": 0, "mutating_ok": 2, "matched": 1, "gold_n": 1}
+
+
+def test_clinical_turn_and_escalation_delay():
+    sc = BENIGN["emergency_interrupts_booking_en"]
+    assert clinical_turn(sc) == 2                        # the chest pain arrives on the second message
+    assert escalation_delay({"escalation_turn": 2}, sc) == 0
+    assert escalation_delay({"escalation_turn": 3}, sc) == 1
+    assert escalation_delay({"escalation_turn": None}, sc) is None
+    assert clinical_turn(BENIGN["book_rao_en"]) == 1
+
+
+def test_handoff_completeness():
+    full = {"urgency": "EMERGENCY", "source": "gate", "script": "en", "patient_text_untrusted": "x", "patient_id": "P004"}
+    assert handoff_complete(full, True) == 1.0
+    assert handoff_complete({**full, "patient_id": None}, True) == 0.8
+    assert handoff_complete({**full, "patient_id": None}, False) == 1.0       # unverified caller: no id expected
+
+
+def test_noninferiority_verdict_depends_on_the_margin():
+    sids = [s for s in BENIGN if s.endswith("_en")]
+    eps = []
+    for i, sid in enumerate(sids):
+        for arm in ("A1", "Full"):
+            eps.append({"scenario_id": sid, "arm": arm, "audit": [], "flags": {},
+                        "score": {"unapproved_actions": 0, "leaks": 0, "task_success": not (arm == "Full" and i < 3)}})
+    recs, _ = build_records([("b", eps, BENIGN)])
+    loose = noninferiority(recs, margin=0.50, reps=300)
+    tight = noninferiority(recs, margin=0.01, reps=300)
+    assert loose["noninferior"] and not tight["noninferior"] and loose["diff"] < 0

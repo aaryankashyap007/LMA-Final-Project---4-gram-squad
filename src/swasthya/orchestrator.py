@@ -192,6 +192,7 @@ class Orchestrator:
         self.user_texts: List[str] = []
         self.red_flags_seen, self.last_info = set(), None     # tags from every patient message so far
         self.transcript, self.handoffs, self.gate_log = [], [], []
+        self.verifier_log = []
         self.followups, self.tokens = 0, 0
         self.escalated, self.escalation_turn = False, None
         self.flags = {"gate_outage": False, "budget_exceeded": False, "rounds_exceeded": False,
@@ -274,7 +275,12 @@ class Orchestrator:
     def _finish(self, text):
         text = (text or "").strip() or FALLBACK
         if self.verifier is not None:
-            text = self.verifier(text)
+            hits = self.verifier.check(text)
+            if hits:                                                  # keep the original: it never reaches the patient
+                self.verifier_log.append({"turn": self.session.turn, "original": text, "hits": hits,
+                                          "blocked": bool(self.verifier.enforce)})
+                if self.verifier.enforce:
+                    text = self.verifier.safe_text(text)
         if self.arm.guard and self.session.pending_summary:      # shown by code, not paraphrased by the LLM
             text += f"\n\n[To confirm: {self.session.pending_summary}. Reply yes to confirm.]"
         return text
@@ -353,4 +359,5 @@ def run_episode(scenario, arm: Arm, llm, gate, base_clinic: Clinic, auto_confirm
             "score": score_episode(clinic, scenario.gold), "transcript": orch.transcript,
             "audit": clinic.audit, "handoffs": orch.handoffs, "gate_log": orch.gate_log,
             "escalation_turn": orch.escalation_turn, "flags": orch.flags, "tokens": orch.tokens,
+            "verifier": orch.verifier_log,
             "auto_confirmations": auto, "final_booked": sorted(list(t) for t in clinic.booked_set())}

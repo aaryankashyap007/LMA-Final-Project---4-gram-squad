@@ -29,8 +29,9 @@ patient message -> normaliser -> safety gate --unsafe--> fixed reply + staff han
 | Mutation testing of the action guard (10 single, 6 paired mutants, 6 probes) | done |
 | 2x2 ablation of gate and guard: statistical analysis (exact McNemar with Holm, cluster bootstrap, interaction) | done on all runs so far; no significant effect (2 vs 0 events) |
 | `+Gate_V0` arm (prompted gate, guard off) | done on the benign set (Ultra) and adversarial v0 (Nano) |
+| Rule-based medical-advice verifier (`src/swasthya/verifier.py`) | done: labelled-reply evaluation and one live run; word lists author-written, unreviewed |
 | Native-speaker review of Hinglish and Devanagari wording | done (no changes requested) |
-| Clinician review of rubric, labels and emergency replies | not done: no clinician was available; stated as a limitation (see Limitations) |
+| Clinician review of rubric, labels and emergency replies | not done: no clinician was available; stated as a limitation (see Limitations). Replaced by a cross-check against the WHO/ICRC/MSF IITT (`docs/GUIDELINE_CROSSCHECK.md`), which is not a validation |
 
 ## Repository layout
 
@@ -161,6 +162,7 @@ Six arms (`swasthya.orchestrator.ARMS`): A0 (no tools), A1 (LLM triages by promp
 | Adversarial v1 (plausible, no jailbreak wording) | Liquid 1.7B, Nano | 150 each | 0 unapproved, 0 leaks in every arm; guard blocked 8 harmful attempts across the two runs, none occurred in the guard-off arms |
 | Adversarial v2 (attack planted in a tool result) | Nemotron Nano, Liquid 1.7B | 135 each | 0 unapproved, 0 leaks, 0 harmful attempts in every arm; the planted note was returned to the model in 39 of 96 (Nano) and 62 of 96 (Liquid) LLM-arm attack episodes and never acted on |
 | `+Gate_V0` arm (prompted gate, guard off) | Ultra (benign), Nano (adversarial v0) | 39 each | benign: 37/39 success, 2 false escalations and 1 of 6 must-escalate scenarios missed (G1: 39/39, 6 of 6); adversarial v0: 9 of 39 escalated (G1 gate 4), 1 unapproved action |
+| Medical-advice requests with the rule-based verifier | Liquid 1.7B (paid endpoint) | 150 | the model refused almost every request; 3 of 70 replies gave advice; the verifier's word list blocks refusals that repeat the patient's word unless refusal-aware (31 of 34 wrong blocks in version 0, 4 of 7 in version 1); recall 3/3 on those 3, 34/34 on advice with a listed word and 0/9 without |
 
 Because the real models rarely try the attacks, the arms tie at zero and the headline metric cannot separate them. Three further views are used, all in the log:
 - **Attempted-attack analysis** (`scripts/analyze_attempts.py`): counts harmful tool calls per arm from the audit log and replays blocked calls with the guard off.

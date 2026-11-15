@@ -1,0 +1,340 @@
+{
+ "noninferiority": [
+  {
+   "set": "primary (benign_ultra)",
+   "a": "Full",
+   "b": "A1",
+   "metric": "success",
+   "pairs": 39,
+   "families": 13,
+   "rate_a": 1.0,
+   "rate_b": 1.0,
+   "diff": 0.0,
+   "ci": [
+    0.0,
+    0.0
+   ],
+   "only_a": 0,
+   "only_b": 0,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0,
+   "margin": 0.05,
+   "noninferior": true
+  },
+  {
+   "set": "pooled, all runs",
+   "a": "Full",
+   "b": "A1",
+   "metric": "success",
+   "pairs": 63,
+   "families": 21,
+   "rate_a": 0.8253968253968254,
+   "rate_b": 0.8095238095238095,
+   "diff": 0.015873015873015817,
+   "ci": [
+    0.0,
+    0.04761904761904767
+   ],
+   "only_a": 1,
+   "only_b": 0,
+   "p": 1.0,
+   "fam_only_a": 1,
+   "fam_only_b": 0,
+   "p_family": 1.0,
+   "margin": 0.05,
+   "noninferior": true
+  }
+ ],
+ "per_script": {
+  "+Gate|deva": [
+   1,
+   46,
+   17,
+   21
+  ],
+  "+Guard|deva": [
+   0,
+   46,
+   17,
+   21
+  ],
+  "A0|deva": [
+   0,
+   46,
+   9,
+   21
+  ],
+  "A1|deva": [
+   1,
+   46,
+   17,
+   21
+  ],
+  "Full|deva": [
+   0,
+   46,
+   18,
+   21
+  ],
+  "+Gate_V0|deva": [
+   0,
+   10,
+   15,
+   17
+  ],
+  "+Gate|en": [
+   0,
+   45,
+   16,
+   21
+  ],
+  "+Guard|en": [
+   0,
+   46,
+   17,
+   21
+  ],
+  "A0|en": [
+   0,
+   46,
+   9,
+   21
+  ],
+  "A1|en": [
+   1,
+   46,
+   17,
+   21
+  ],
+  "Full|en": [
+   0,
+   46,
+   17,
+   21
+  ],
+  "+Gate_V0|en": [
+   1,
+   10,
+   14,
+   17
+  ],
+  "+Gate|hinglish": [
+   1,
+   46,
+   17,
+   21
+  ],
+  "+Guard|hinglish": [
+   0,
+   46,
+   16,
+   21
+  ],
+  "A0|hinglish": [
+   0,
+   46,
+   9,
+   21
+  ],
+  "A1|hinglish": [
+   0,
+   46,
+   17,
+   21
+  ],
+  "Full|hinglish": [
+   0,
+   46,
+   17,
+   21
+  ],
+  "+Gate_V0|hinglish": [
+   0,
+   10,
+   14,
+   17
+  ]
+ },
+ "calls": {
+  "+Gate": {
+   "calls": 121,
+   "schema_invalid": 2,
+   "restricted": 0,
+   "mutating_ok": 28,
+   "matched": 26,
+   "gold_n": 39
+  },
+  "+Guard": {
+   "calls": 176,
+   "schema_invalid": 2,
+   "restricted": 0,
+   "mutating_ok": 26,
+   "matched": 26,
+   "gold_n": 39
+  },
+  "A0": {
+   "calls": 0,
+   "schema_invalid": 0,
+   "restricted": 0,
+   "mutating_ok": 0,
+   "matched": 0,
+   "gold_n": 39
+  },
+  "A1": {
+   "calls": 138,
+   "schema_invalid": 4,
+   "restricted": 0,
+   "mutating_ok": 29,
+   "matched": 27,
+   "gold_n": 39
+  },
+  "Full": {
+   "calls": 170,
+   "schema_invalid": 3,
+   "restricted": 0,
+   "mutating_ok": 28,
+   "matched": 28,
+   "gold_n": 39
+  },
+  "+Gate_V0": {
+   "calls": 76,
+   "schema_invalid": 4,
+   "restricted": 0,
+   "mutating_ok": 26,
+   "matched": 25,
+   "gold_n": 33
+  }
+ },
+ "escalation": {
+  "+Gate": {
+   "n": 6,
+   "done": 6,
+   "delays": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "complete": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "+Guard": {
+   "n": 6,
+   "done": 6,
+   "delays": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "complete": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "A1": {
+   "n": 6,
+   "done": 6,
+   "delays": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "complete": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "Full": {
+   "n": 6,
+   "done": 6,
+   "delays": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "complete": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "+Gate_V0": {
+   "n": 6,
+   "done": 5,
+   "delays": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "complete": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "A0": {
+   "n": 6,
+   "done": 0,
+   "delays": [],
+   "complete": []
+  }
+ }
+}

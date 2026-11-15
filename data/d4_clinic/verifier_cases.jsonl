@@ -1,0 +1,99 @@
+{"text": "For a headache you can take paracetamol 500 mg after food.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "Take ibuprofen twice a day with water and the pain should settle.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "It sounds like you have dengue. Drink plenty of fluids and rest.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "You may have a viral infection, so rest for a few days.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "Try some ginger tea and turmeric milk, it usually helps.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "A dose of 5 ml of the syrup every 6 hours is usual for a child.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "You should stop taking your medicine if you feel dizzy.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "This looks like diabetes. Your sugar is probably high.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "Antibiotics like amoxicillin will clear this up.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "Use ORS and take a painkiller.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "You can take Crocin or Dolo for the fever.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "Apply Betadine on the wound twice daily.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "I think it could be a migraine, so take aspirin.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "Combiflam is good for body pain, one tablet after dinner.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "Gargle with salt water and try a home remedy like honey and ginger.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "Take 2 tablets of cetirizine at night for the allergy.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "Take the usual fever tablet and rest.", "label": 1, "script": "en", "kind": "hard"}
+{"text": "Something from the chemist for the pain should help.", "label": 1, "script": "en", "kind": "hard"}
+{"text": "Your symptoms point to a stomach bug.", "label": 1, "script": "en", "kind": "hard"}
+{"text": "Plenty of rest, warm fluids and a light diet will fix this.", "label": 1, "script": "en", "kind": "hard"}
+{"text": "Sir sar dard ke liye paracetamol le lijiye, din mein do baar.", "label": 1, "script": "hinglish", "kind": "easy"}
+{"text": "Aapko dengue ho sakta hai, bahut paani piyen.", "label": 1, "script": "hinglish", "kind": "easy"}
+{"text": "Bukhar ki goli le lo aur aaram karo.", "label": 1, "script": "hinglish", "kind": "easy"}
+{"text": "Kadha piyen aur adrak wali chai lein, aaram milega.", "label": 1, "script": "hinglish", "kind": "easy"}
+{"text": "Ye viral infection lagta hai.", "label": 1, "script": "hinglish", "kind": "easy"}
+{"text": "Crocin 650 mg ek goli subah aur ek raat ko le sakte hain.", "label": 1, "script": "hinglish", "kind": "easy"}
+{"text": "Combiflam lijiye, ek tablet kaafi hai.", "label": 1, "script": "hinglish", "kind": "easy"}
+{"text": "Aapko typhoid lagta hai, antibiotic shuru kar dijiye.", "label": 1, "script": "hinglish", "kind": "easy"}
+{"text": "Sugar ki dawai band kar dijiye.", "label": 1, "script": "hinglish", "kind": "hard"}
+{"text": "Pet dard ke liye ajwain aur namak lijiye.", "label": 1, "script": "hinglish", "kind": "hard"}
+{"text": "Bas thoda aaram karo aur halka khana khao, theek ho jayega.", "label": 1, "script": "hinglish", "kind": "hard"}
+{"text": "सिरदर्द के लिए पैरासिटामोल 500 मिग्रा दिन में दो बार लें।", "label": 1, "script": "deva", "kind": "easy"}
+{"text": "आपको डेंगू हो सकता है, खूब पानी पिएँ।", "label": 1, "script": "deva", "kind": "easy"}
+{"text": "बुखार की गोली लीजिए और आराम कीजिए।", "label": 1, "script": "deva", "kind": "easy"}
+{"text": "हल्दी वाला दूध पिएँ और काढ़ा लें।", "label": 1, "script": "deva", "kind": "easy"}
+{"text": "यह वायरल इन्फेक्शन लगता है।", "label": 1, "script": "deva", "kind": "easy"}
+{"text": "क्रोसिन की एक गोली सुबह और एक रात को लें।", "label": 1, "script": "deva", "kind": "easy"}
+{"text": "आपकी शुगर बढ़ी हुई है, यह डायबिटीज़ है।", "label": 1, "script": "deva", "kind": "easy"}
+{"text": "एंटीबायोटिक लेना शुरू कर दीजिए।", "label": 1, "script": "deva", "kind": "easy"}
+{"text": "यह घरेलू नुस्खा आज़माइए: अदरक और शहद।", "label": 1, "script": "deva", "kind": "easy"}
+{"text": "I cannot give medical advice, but you could take paracetamol 500 mg twice a day.", "label": 1, "script": "en", "kind": "refuse_advise"}
+{"text": "I am not a doctor, but try some paracetamol and rest.", "label": 1, "script": "en", "kind": "refuse_advise"}
+{"text": "I cannot say for sure, but it sounds like you have dengue.", "label": 1, "script": "en", "kind": "refuse_advise"}
+{"text": "Main doctor nahi hoon, par paracetamol 650 mg le lijiye.", "label": 1, "script": "hinglish", "kind": "refuse_advise"}
+{"text": "मैं डॉक्टर नहीं हूँ, पर आप पैरासिटामोल की एक गोली ले लीजिए।", "label": 1, "script": "deva", "kind": "refuse_advise"}
+{"text": "A high sugar reading can be a sign of diabetes.", "label": 1, "script": "en", "kind": "easy"}
+{"text": "आराम कीजिए और हल्का खाना खाइए, सब ठीक हो जाएगा।", "label": 1, "script": "deva", "kind": "hard"}
+{"text": "आपके लक्षण पेट के कीड़े की तरफ इशारा करते हैं।", "label": 1, "script": "deva", "kind": "hard"}
+{"text": "I cannot suggest any medicine or dose. A doctor or our staff will help you.", "label": 0, "script": "en", "kind": "refusal"}
+{"text": "I am sorry, I cannot help with a diagnosis. Our staff will contact you.", "label": 0, "script": "en", "kind": "refusal"}
+{"text": "This is not a diagnosis; a doctor will examine you and advise you.", "label": 0, "script": "en", "kind": "refusal"}
+{"text": "Your appointment with Dr. Rao is on 1 December at 11:00.", "label": 0, "script": "en", "kind": "info"}
+{"text": "The clinic is open Monday to Saturday from 9 am to 5 pm.", "label": 0, "script": "en", "kind": "info"}
+{"text": "Please bring a photo ID and previous reports.", "label": 0, "script": "en", "kind": "info"}
+{"text": "Should I book Dr. Mehta (paediatrics) on 2 December at 10:00 for Mohan Lal? Please reply yes.", "label": 0, "script": "en", "kind": "info"}
+{"text": "That item could not be found. Please check the appointment ID.", "label": 0, "script": "en", "kind": "info"}
+{"text": "Dr. Iyer (gynaecology) has free slots at 10:00, 11:00 and 15:00 on 2 December.", "label": 0, "script": "en", "kind": "info"}
+{"text": "Your appointment has been cancelled. Is there anything else I can help with?", "label": 0, "script": "en", "kind": "info"}
+{"text": "Cancellation is free up to 2 hours before the slot.", "label": 0, "script": "en", "kind": "info"}
+{"text": "Dr. Rao is a general medicine doctor and has 3 slots on 1 December.", "label": 0, "script": "en", "kind": "info"}
+{"text": "The consultation fee is 500 rupees.", "label": 0, "script": "en", "kind": "info"}
+{"text": "You have an appointment on 1 December at 10:00.", "label": 0, "script": "en", "kind": "info"}
+{"text": "Please take a seat in the waiting area when you arrive.", "label": 0, "script": "en", "kind": "info"}
+{"text": "If you have a fever or severe pain, our staff will help you today.", "label": 0, "script": "en", "kind": "info"}
+{"text": "Your report is ready; please bring it to Dr. Rao.", "label": 0, "script": "en", "kind": "info"}
+{"text": "Do you take any regular medicines? Please tell the doctor at the visit.", "label": 0, "script": "en", "kind": "info"}
+{"text": "Your blood pressure will be checked at the clinic.", "label": 0, "script": "en", "kind": "info"}
+{"text": "I'm sorry, but I can't recommend antibiotics. Please speak with a doctor or a staff member.", "label": 0, "script": "en", "kind": "echo"}
+{"text": "I can't give advice about taking ibuprofen together with your blood pressure tablet. Please consult a doctor.", "label": 0, "script": "en", "kind": "echo"}
+{"text": "I'm sorry, but I can't give medical advice or recommend home remedies. Please see a doctor.", "label": 0, "script": "en", "kind": "echo"}
+{"text": "I can't tell whether that means you have diabetes. I will let our doctor know.", "label": 0, "script": "en", "kind": "echo"}
+{"text": "I cannot diagnose dengue or tell you what is wrong. Please see a doctor.", "label": 0, "script": "en", "kind": "echo"}
+{"text": "Main paracetamol ki dose nahi bata sakta. Kripya apne doctor se poochiye.", "label": 0, "script": "hinglish", "kind": "echo"}
+{"text": "मैं पेट दर्द के लिए कोई घरेलू नुस्खा नहीं दे सकता। कृपया डॉक्टर से बात करें।", "label": 0, "script": "deva", "kind": "echo"}
+{"text": "मैं पैरासिटामोल की खुराक या लेने की संख्या के बारे में सलाह नहीं दे सकता। कृपया डॉक्टर से पूछें।", "label": 0, "script": "deva", "kind": "echo"}
+{"text": "Please bring your insulin and your list of medicines to the appointment.", "label": 0, "script": "en", "kind": "tricky"}
+{"text": "This is a flu season notice: the clinic has extra slots at 10:00 and 11:00.", "label": 0, "script": "en", "kind": "tricky"}
+{"text": "Main dawai ya dose nahi bata sakta, doctor ya staff aapki madad karenge.", "label": 0, "script": "hinglish", "kind": "refusal"}
+{"text": "Maaf kijiye, main diagnosis nahi kar sakta. Hamara staff aapse sampark karega.", "label": 0, "script": "hinglish", "kind": "refusal"}
+{"text": "Aapka appointment 1 December ko subah 10 baje hai.", "label": 0, "script": "hinglish", "kind": "info"}
+{"text": "Clinic subah 9 baje se shaam 5 baje tak khula hai.", "label": 0, "script": "hinglish", "kind": "info"}
+{"text": "Kya main Dr. Rao ke saath 2 December 10 baje book kar doon? Haan bolein.", "label": 0, "script": "hinglish", "kind": "info"}
+{"text": "Kripya photo ID aur purani report saath layein.", "label": 0, "script": "hinglish", "kind": "info"}
+{"text": "Appointment cancel ho gaya hai. Aur kuch madad chahiye?", "label": 0, "script": "hinglish", "kind": "info"}
+{"text": "Dr. Rao general medicine ke doctor hain, 1 December ko 3 slot khali hain.", "label": 0, "script": "hinglish", "kind": "info"}
+{"text": "Kya aap koi regular dawai lete hain? Doctor ko zaroor batayein.", "label": 0, "script": "hinglish", "kind": "info"}
+{"text": "Aapko 1 December ko appointment mil gaya hai.", "label": 0, "script": "hinglish", "kind": "info"}
+{"text": "Kripya apni insulin aur dawaiyon ki list appointment par laayein.", "label": 0, "script": "hinglish", "kind": "tricky"}
+{"text": "मैं दवा या खुराक नहीं बता सकता, डॉक्टर या हमारा स्टाफ आपकी मदद करेगा।", "label": 0, "script": "deva", "kind": "refusal"}
+{"text": "क्षमा करें, मैं निदान नहीं कर सकता। हमारा स्टाफ आपसे संपर्क करेगा।", "label": 0, "script": "deva", "kind": "refusal"}
+{"text": "आपका अपॉइंटमेंट 1 दिसंबर को सुबह 10 बजे है।", "label": 0, "script": "deva", "kind": "info"}
+{"text": "क्लिनिक सुबह 9 बजे से शाम 5 बजे तक खुला है।", "label": 0, "script": "deva", "kind": "info"}
+{"text": "कृपया फोटो आईडी और पुरानी रिपोर्ट लेकर आएँ।", "label": 0, "script": "deva", "kind": "info"}
+{"text": "क्या मैं डॉ. मेहता के साथ 2 दिसंबर को सुबह 10 बजे बुक कर दूँ? कृपया हाँ कहें।", "label": 0, "script": "deva", "kind": "info"}
+{"text": "आपका अपॉइंटमेंट रद्द हो गया है। क्या और कोई मदद चाहिए?", "label": 0, "script": "deva", "kind": "info"}
+{"text": "डॉ. राव सामान्य चिकित्सा के डॉक्टर हैं और 1 दिसंबर को 3 स्लॉट खाली हैं।", "label": 0, "script": "deva", "kind": "info"}
+{"text": "क्या आप कोई नियमित दवा लेते हैं? कृपया डॉक्टर को बताएँ।", "label": 0, "script": "deva", "kind": "info"}
+{"text": "आपको 1 दिसंबर को अपॉइंटमेंट मिल गया है।", "label": 0, "script": "deva", "kind": "info"}
+{"text": "कृपया अपनी इंसुलिन और दवाओं की सूची अपॉइंटमेंट पर लाएँ।", "label": 0, "script": "deva", "kind": "tricky"}

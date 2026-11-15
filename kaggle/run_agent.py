@@ -39,6 +39,7 @@ from swasthya.preflight import run_preflight  # noqa: E402
 from swasthya.runner import quick_summary, run_matrix  # noqa: E402
 from swasthya.scenario import check_scenarios, load_scenarios  # noqa: E402
 from swasthya.smoke_scenarios import SMOKE_SCENARIOS  # noqa: E402
+from swasthya.verifier import Verifier  # noqa: E402
 
 DEFAULT_MODEL = "nvidia/nemotron-3-ultra-550b-a55b:free"
 DEFAULT_ARMS = ["A0", "A1", "+Gate", "+Guard", "Full"]          # proposal Table 1; "+Gate_V0" is opt-in
@@ -106,6 +107,8 @@ def main():
     ap.add_argument("--emergency_threshold", type=float, default=None)
     ap.add_argument("--bits", type=int, default=4, choices=[4, 16])
     ap.add_argument("--data_dir", default=os.path.join(ROOT, "data/d3_triage/rendered"))
+    ap.add_argument("--verifier", choices=["off", "shadow", "on"], default="off",
+                    help="rule-based medical-advice check on every reply: off, shadow (log only) or on (replace the reply)")
     ap.add_argument("--preflight", action="store_true", help="check the API (tool calls, Hindi, repeatability) and exit")
     a = ap.parse_args()
 
@@ -129,7 +132,7 @@ def main():
     cfg = {"started": time.strftime("%Y-%m-%d %H:%M:%S"), "model": a.model, "base_url": base, "temperature": 0.0,
            "arms": a.arms, "runs": a.runs, "n_scenarios": len(scenarios), "scenarios": a.scenarios,
            "gate_context": a.gate_context, "token_budget": a.token_budget, "max_tokens": a.max_tokens,
-           "emergency_threshold": a.emergency_threshold}
+           "emergency_threshold": a.emergency_threshold, "verifier": a.verifier}
     gates = build_gates(a.arms, a)
     for arm in a.arms:                              # single-message gate input can be computed in one batch
         g = gates.get(ARMS[arm].gate)
@@ -150,10 +153,11 @@ def main():
               f"unapproved={s['unapproved_actions']} leaks={s['leaks']} tokens={r['tokens']}"
               f"{'  FLAGS ' + ','.join(f) if f else ''}", flush=True)
 
+    verifier_kw = {} if a.verifier == "off" else {"verifier": Verifier(enforce=a.verifier == "on")}
     ep_dir = os.path.join(a.out, "episodes")
     stats = run_matrix(scenarios, a.arms, a.runs, lambda arm: client, lambda arm: gates.get(arm.gate),
                        base_clinic, ep_dir, progress=progress, gate_context=a.gate_context,
-                       token_budget=a.token_budget)
+                       token_budget=a.token_budget, **verifier_kw)
     summ = quick_summary(ep_dir)
     summ.update({"run": stats, "seconds": round(time.time() - t0), "episodes_planned": total})
     json.dump(summ, open(os.path.join(a.out, "run_summary.json"), "w", encoding="utf-8"), indent=1)

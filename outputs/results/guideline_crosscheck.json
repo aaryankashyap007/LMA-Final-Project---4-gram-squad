@@ -1,0 +1,401 @@
+{
+ "n": 150,
+ "confusion": {
+  "EMERGENCY|red": 43,
+  "ROUTINE|none": 25,
+  "EMERGENCY|yellow": 10,
+  "URGENT|yellow": 21,
+  "INSUFFICIENT|none": 23,
+  "EMERGENCY|none": 7,
+  "INSUFFICIENT|yellow": 1,
+  "URGENT|none": 13,
+  "ROUTINE|yellow": 5,
+  "URGENT|red": 2
+ },
+ "exact": 89,
+ "scored": 126,
+ "emergency_vs_not": 107,
+ "under": [
+  "C053",
+  "C127"
+ ],
+ "over": [
+  "C004",
+  "C005",
+  "C017",
+  "C020",
+  "C022",
+  "C024",
+  "C045",
+  "C049",
+  "C067",
+  "C078",
+  "C089",
+  "C102",
+  "C107",
+  "C111",
+  "C120",
+  "C123",
+  "C144"
+ ],
+ "coverage": {
+  "R03": {
+   "EMERGENCY": 9
+  },
+  "Y05": {
+   "EMERGENCY": 6
+  },
+  "R05": {
+   "EMERGENCY": 3,
+   "URGENT": 1
+  },
+  "Y07": {
+   "EMERGENCY": 9,
+   "URGENT": 8
+  },
+  "Y11": {
+   "EMERGENCY": 5,
+   "ROUTINE": 1,
+   "URGENT": 2
+  },
+  "Y10": {
+   "EMERGENCY": 5,
+   "INSUFFICIENT": 1,
+   "URGENT": 2
+  },
+  "Y03": {
+   "URGENT": 4,
+   "EMERGENCY": 1
+  },
+  "R02": {
+   "EMERGENCY": 7
+  },
+  "R01": {
+   "EMERGENCY": 9
+  },
+  "R04": {
+   "EMERGENCY": 3
+  },
+  "Y06": {
+   "EMERGENCY": 4,
+   "ROUTINE": 1,
+   "URGENT": 1
+  },
+  "R09": {
+   "EMERGENCY": 6,
+   "URGENT": 1
+  },
+  "Y09": {
+   "EMERGENCY": 4,
+   "ROUTINE": 1,
+   "URGENT": 4
+  },
+  "Y12": {
+   "EMERGENCY": 6,
+   "URGENT": 1
+  },
+  "Y14": {
+   "URGENT": 1,
+   "EMERGENCY": 1,
+   "ROUTINE": 1
+  },
+  "R10": {
+   "EMERGENCY": 4
+  },
+  "R07": {
+   "EMERGENCY": 3
+  },
+  "R13": {
+   "EMERGENCY": 1
+  },
+  "Y04": {
+   "EMERGENCY": 2,
+   "URGENT": 1
+  },
+  "R06": {
+   "EMERGENCY": 1
+  },
+  "Y08": {
+   "EMERGENCY": 1,
+   "URGENT": 1
+  },
+  "Y01": {
+   "EMERGENCY": 1
+  },
+  "R08": {
+   "EMERGENCY": 2
+  },
+  "R12": {
+   "EMERGENCY": 1
+  },
+  "Y02": {
+   "ROUTINE": 1,
+   "EMERGENCY": 1
+  },
+  "R11": {
+   "EMERGENCY": 1
+  }
+ },
+ "disagreements": [
+  {
+   "case": "C004",
+   "ours": "EMERGENCY",
+   "iitt": "yellow",
+   "rules": [
+    "Y07",
+    "Y11"
+   ]
+  },
+  {
+   "case": "C005",
+   "ours": "EMERGENCY",
+   "iitt": "yellow",
+   "rules": [
+    "Y10"
+   ]
+  },
+  {
+   "case": "C017",
+   "ours": "EMERGENCY",
+   "iitt": "yellow",
+   "rules": [
+    "Y06"
+   ]
+  },
+  {
+   "case": "C020",
+   "ours": "EMERGENCY",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C022",
+   "ours": "EMERGENCY",
+   "iitt": "yellow",
+   "rules": [
+    "Y11"
+   ]
+  },
+  {
+   "case": "C024",
+   "ours": "EMERGENCY",
+   "iitt": "yellow",
+   "rules": [
+    "Y10"
+   ]
+  },
+  {
+   "case": "C033",
+   "ours": "URGENT",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C035",
+   "ours": "ROUTINE",
+   "iitt": "yellow",
+   "rules": [
+    "Y06"
+   ]
+  },
+  {
+   "case": "C036",
+   "ours": "ROUTINE",
+   "iitt": "yellow",
+   "rules": [
+    "Y09"
+   ]
+  },
+  {
+   "case": "C039",
+   "ours": "URGENT",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C045",
+   "ours": "EMERGENCY",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C049",
+   "ours": "EMERGENCY",
+   "iitt": "yellow",
+   "rules": [
+    "Y07",
+    "Y10"
+   ]
+  },
+  {
+   "case": "C052",
+   "ours": "URGENT",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C053",
+   "ours": "URGENT",
+   "iitt": "red",
+   "rules": [
+    "R09",
+    "Y09"
+   ]
+  },
+  {
+   "case": "C061",
+   "ours": "URGENT",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C063",
+   "ours": "ROUTINE",
+   "iitt": "yellow",
+   "rules": [
+    "Y11"
+   ]
+  },
+  {
+   "case": "C067",
+   "ours": "EMERGENCY",
+   "iitt": "yellow",
+   "rules": [
+    "Y06",
+    "Y12"
+   ]
+  },
+  {
+   "case": "C068",
+   "ours": "URGENT",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C078",
+   "ours": "EMERGENCY",
+   "iitt": "yellow",
+   "rules": [
+    "Y12"
+   ]
+  },
+  {
+   "case": "C081",
+   "ours": "URGENT",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C084",
+   "ours": "URGENT",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C086",
+   "ours": "ROUTINE",
+   "iitt": "yellow",
+   "rules": [
+    "Y02"
+   ]
+  },
+  {
+   "case": "C088",
+   "ours": "URGENT",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C089",
+   "ours": "EMERGENCY",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C097",
+   "ours": "URGENT",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C102",
+   "ours": "EMERGENCY",
+   "iitt": "yellow",
+   "rules": [
+    "Y11"
+   ]
+  },
+  {
+   "case": "C107",
+   "ours": "EMERGENCY",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C111",
+   "ours": "EMERGENCY",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C119",
+   "ours": "URGENT",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C120",
+   "ours": "EMERGENCY",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C122",
+   "ours": "URGENT",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C123",
+   "ours": "EMERGENCY",
+   "iitt": "yellow",
+   "rules": [
+    "Y10"
+   ]
+  },
+  {
+   "case": "C127",
+   "ours": "URGENT",
+   "iitt": "red",
+   "rules": [
+    "R05"
+   ]
+  },
+  {
+   "case": "C128",
+   "ours": "URGENT",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C132",
+   "ours": "URGENT",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C144",
+   "ours": "EMERGENCY",
+   "iitt": "none",
+   "rules": []
+  },
+  {
+   "case": "C149",
+   "ours": "ROUTINE",
+   "iitt": "yellow",
+   "rules": [
+    "Y14"
+   ]
+  }
+ ]
+}
