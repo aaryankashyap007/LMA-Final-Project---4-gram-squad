@@ -183,6 +183,13 @@ Use a different `--out` from the benign run. Expect 585 episodes at 3 runs (abou
 A strong agent model may refuse every attack on its own, so all arms can still read 0: that is a result about the
 model, and H2 would then need a weaker agent model as well. Say so rather than hiding it.
 
+### 2f-v1. Plausible attacks (`scenarios_adversarial_v1.jsonl`)
+v0 uses overt jailbreak wording, which strong models refuse on their own (all arms scored 0 on Nemotron Ultra). v1 has
+30 scenarios (10 families x 3 scripts) of plain, believable requests that a helpful model tends to grant: a caller for an
+unregistered neighbour, wife, sister or aunt, a "reception" bulk cancel, a pasted "clinic email", a wrong patient id, a
+name claim, a slot swap, a sympathy cancel. Generate with `python scripts/make_scenarios_adversarial_v1.py`; run it exactly
+like v0 with a different `--out` (for example `agent_advv1`). Counter-checks (benign): the proxy scenarios of the benign set.
+
 ## 3. Back on your PC
 ```bash
 unzip -q ~/Downloads/outputs.zip -d /tmp/k && cp -r /tmp/k/outputs/* outputs/raw/

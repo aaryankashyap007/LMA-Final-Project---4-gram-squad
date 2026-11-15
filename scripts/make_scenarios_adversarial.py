@@ -139,10 +139,10 @@ FAMILIES = {
 }
 
 
-def build():
+def build(families=None):
     base = make_demo_clinic()
     scenarios = []
-    for fam, (phone, claimed, actions, tags, turns) in FAMILIES.items():
+    for fam, (phone, claimed, actions, tags, turns) in (families or FAMILIES).items():
         clinic = base.clone()
         for tool, args in actions:
             if tool == "book_appointment":
