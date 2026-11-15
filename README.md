@@ -23,8 +23,8 @@ patient message -> normaliser -> safety gate --unsafe--> fixed reply + staff han
 | Evaluation harness, scoring, tables, matched over-triage analysis (H1) | done |
 | Training-script and prompting ablations | done (G1: three seeds for all, English-only, Hinglish-only and Devanagari-only) |
 | D4 clinic simulator, tools, action guard, orchestrator, independent episode scoring | done |
-| Scenario sets: benign (39), adversarial v0 (39), adversarial v1 (30), each in English, Hinglish, Devanagari | done |
-| Agent runs on all five arms (A0, A1, +Gate, +Guard, Full) | benign set done; adversarial v1 done on two small models; adversarial v0 done on Nano (Ultra full result not saved) |
+| Scenario sets: benign (39), adversarial v0 (39), v1 (30), v2 with attacks in tool results (27), medical advice (30), each in English, Hinglish, Devanagari | done |
+| Agent runs on all arms (A0, A1, +Gate, +Gate_V0, +Guard, Full) | done: benign set (Ultra), adversarial v0 (Nano), v1 and v2 (Nano, Liquid), medical advice (Liquid); about 1,190 episodes; the Ultra v0 run was not saved |
 | Attempted-attack analysis and replay of blocked calls | done |
 | Mutation testing of the action guard (10 single, 6 paired mutants, 6 probes) | done |
 | 2x2 ablation of gate and guard: statistical analysis (exact McNemar with Holm, cluster bootstrap, interaction) | done on all runs so far; no significant effect (2 vs 0 events) |
@@ -42,8 +42,8 @@ patient message -> normaliser -> safety gate --unsafe--> fixed reply + staff han
 │   ├── d3_triage/
 │   │   ├── human_cases/      d3_cases.csv (evaluation), d3_train.csv (training), template.csv, archive/
 │   │   └── rendered/         d3_dev.jsonl, d3_test.jsonl, d3_train.jsonl (one line per rendering)
-│   └── d4_clinic/            clinic simulator scenarios (empty for now)
-├── docs/                     writing guide, Kaggle runbook, workflow, experiment log, progress log
+│   └── d4_clinic/            clinic simulator scenario sets (benign, adversarial v0/v1/v2, medical advice) and verifier cases
+├── docs/                     writing guide, Kaggle runbook, workflow, experiment log, progress log, AGENT_LANE_README.md (map of the agent side)
 ├── kaggle/                   standalone GPU scripts that run on Kaggle
 ├── outputs/
 │   ├── raw/                  downloaded Kaggle outputs (not tracked by git)
@@ -54,7 +54,7 @@ patient message -> normaliser -> safety gate --unsafe--> fixed reply + staff han
 ├── scripts/                  command-line tools (validate, score, tables, analysis)
 │   └── bootstrap/            one-off installers that created the repository files
 ├── src/swasthya/             shared library
-└── tests/                    unit tests (340)
+└── tests/                    unit tests (381)
 ```
 
 ## Setup
@@ -63,7 +63,7 @@ patient message -> normaliser -> safety gate --unsafe--> fixed reply + staff han
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt pytest
 export PYTHONPATH=src
-pytest -q                     # 340 tests
+pytest -q                     # 381 tests
 ```
 
 GPU work (training and inference of MuRIL and Qwen) runs on Kaggle, not locally; `torch`, `transformers`, `peft`, `bitsandbytes` and `accelerate` are installed there (see `docs/KAGGLE_RUNBOOK.md`).
