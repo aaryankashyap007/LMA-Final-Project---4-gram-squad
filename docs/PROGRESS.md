@@ -14,6 +14,7 @@
 - [x] Review sheets (native speaker, clinician) and a scorer for the clinician sheet; both sent
 - [x] Native-speaker review returned: no wording changes requested (as reported by the author; the sheet is not stored here)
 - [x] G1 adapter downloaded as a local backup
+- [x] Single-script G1 runs finished: Devanagari-only (3 seeds), English-only and Hinglish-only (seeds 42 and 2026 added); training-script ablation now has three seeds per row
 - [x] Medical-advice verifier built, tested and run live (refusal-aware v1 after the first live run); the author's own labels of `docs/review/verifier_live_replies.csv` would replace the assistant's provisional ones
 - [x] Guideline cross-check of the rubric against the WHO/ICRC/MSF IITT (`docs/GUIDELINE_CROSSCHECK.md`); emergency-vs-not agreement 0.85, 2 possible under-triage cases reported
 - [x] Proposal metrics: non-inferiority, per-script, tool-call accuracy, escalation timeliness, hand-off completeness (`scripts/analyze_agent_extras.py`)
@@ -21,7 +22,6 @@
 - [x] Adversarial v0 on Nemotron Nano (195 episodes): first real-model separation, A1 and +Gate 2 unapproved, guard arms 0
 ## In progress
 ## Not started
-- [ ] Devanagari-only gate seed (training-script ablation has no Devanagari-only row; optional)
 - [ ] Not planned unless time allows: repeated runs and pass@3, RAG with BGE-M3 and its metrics, adaptive-intake metrics; Tier 2 items were cut by the week-4 go/no-go
 - [ ] Report tables, figures and write-up (local commits only; the repo is not pushed)
 ## Decided not to do

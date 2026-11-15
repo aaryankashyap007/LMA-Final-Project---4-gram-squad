@@ -21,7 +21,7 @@ patient message -> normaliser -> safety gate --unsafe--> fixed reply + staff han
 | D3 script-parallel triage dataset (evaluation + training) | done |
 | Triage systems: keyword (B0), MuRIL (B1), prompted Qwen (V0), QLoRA gate (G1) | done |
 | Evaluation harness, scoring, tables, matched over-triage analysis (H1) | done |
-| Training-script and prompting ablations | done |
+| Training-script and prompting ablations | done (G1: three seeds for all, English-only, Hinglish-only and Devanagari-only) |
 | D4 clinic simulator, tools, action guard, orchestrator, independent episode scoring | done |
 | Scenario sets: benign (39), adversarial v0 (39), adversarial v1 (30), each in English, Hinglish, Devanagari | done |
 | Agent runs on all five arms (A0, A1, +Gate, +Guard, Full) | benign set done; adversarial v1 done on two small models; adversarial v0 done on Nano (Ultra full result not saved) |
@@ -136,8 +136,11 @@ At the 10% budget G1 beats the 8-shot gate by +0.16 to +0.21 and the zero-shot g
 | Model | Trained on | Emergency recall | Macro-F1 | EN / DE / HI recall |
 |---|---|---|---|---|
 | G1 QLoRA | all (3 seeds) | 0.913 ± 0.035 | 0.812 ± 0.037 | 0.952 / 0.929 / 0.857 |
-| G1 QLoRA | English only (1 seed) | 0.595 | 0.717 | 0.857 / 0.524 / 0.405 |
-| G1 QLoRA | Hinglish only (1 seed) | 0.833 | 0.795 | 0.857 / 0.833 / 0.809 |
+| G1 QLoRA | English only (3 seeds) | 0.593 ± 0.083 | 0.688 ± 0.051 | 0.849 / 0.508 / 0.421 |
+| G1 QLoRA | Hinglish only (3 seeds) | 0.831 ± 0.012 | 0.771 ± 0.032 | 0.897 / 0.809 / 0.786 |
+| G1 QLoRA | Devanagari only (3 seeds) | 0.733 ± 0.037 | 0.749 ± 0.012 | 0.714 / 0.929 / 0.556 |
+
+Reading the table: a model trained on one script is best on that script and transfers unevenly. English-only training transfers worst (Devanagari 0.51, Hinglish 0.42); Hinglish-only transfers best (English 0.90, Devanagari 0.81); Devanagari-only is strong on Devanagari (0.93) and weak on Hinglish (0.56). The Devanagari-only model ties the all-script model on Devanagari (0.93 each); no other single-script model reaches it on any script, though the all-script model also saw three times the data (see the caveats below). Seeds: 13, 42, 2026; the English-only runs vary the most (0.51 to 0.67).
 
 Per-run numbers are in `outputs/results/summary.csv`; the full tables are generated into `outputs/results/table_test.md`.
 
