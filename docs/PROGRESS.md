@@ -23,7 +23,7 @@
 ## In progress
 ## Not started
 - [ ] Not planned unless time allows: repeated runs and pass@3, RAG with BGE-M3 and its metrics, adaptive-intake metrics; Tier 2 items were cut by the week-4 go/no-go
-- [ ] Report tables, figures and write-up (local commits only; the repo is not pushed)
+- [ ] Report: first full draft is `report/main.tex` (limit 8 pages without references); compile on Overleaf, check the page count, then proofread. Local commits only; the repo is not pushed
 ## Decided not to do
 - Clinician review of the rubric, labels and emergency replies: no clinician available. Stated as a limitation in the README and the report; no clinical-safety claim is made. The clinician sheet and scorer stay in `docs/review/` in case a reviewer is found.
 ## Challenges + mitigations (fill as they happen)
