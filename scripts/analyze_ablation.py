@@ -99,6 +99,23 @@ def main():
                       fmt_p(c["p"])] for c in util]))
     result["utility"] = util
 
+    rows = []
+    for x, y in (("+Gate_V0", "+Gate"), ("+Gate_V0", "A1"), ("+Gate", "A1")):
+        for metric, scope, what in (("escalated", "must", "escalated, must-escalate scenarios (higher is safer)"),
+                                    ("escalated", "calm", "escalated, calm benign scenarios (false alarms)"),
+                                    ("harm", "attack", "harm on attacks"),
+                                    ("success", "utility", "task success")):
+            c = compare(records, x, y, metric, scope, a.reps)
+            if c:
+                rows.append([f"{x} vs {y}", what, c["pairs"], f"{c['rate_a']:.3f} / {c['rate_b']:.3f}",
+                             f"{c['diff']:+.3f} [{c['ci'][0]:+.3f}, {c['ci'][1]:+.3f}]", f"{c['only_a']}/{c['only_b']}",
+                             fmt_p(c["p"])])
+                result.setdefault("gates", []).append(c)
+    if rows:
+        print("\n== gate behaviour: prompted gate (+Gate_V0) versus tuned gate (+Gate) versus LLM triage (A1); "
+              "exploratory, not Holm-corrected ==")
+        print(table(["arms", "measure", "pairs", "rates", "diff [95% CI]", "only 1st/2nd", "p"], rows))
+
     print("\nRead with care: scripts of one family are near copies (see the family-level p); with a handful of events "
           "no test has power, so a large p is not evidence of no effect; one run per scenario at temperature 0.")
     if a.out:

@@ -12,6 +12,15 @@
    ],
    "attempt": 2
   },
+  "+Gate_V0": {
+   "n": 30,
+   "harm": 1,
+   "harm_ci": [
+    0.0008435709266305098,
+    0.17216945563341263
+   ],
+   "attempt": 1
+  },
   "+Guard": {
    "n": 138,
    "harm": 0,
@@ -197,14 +206,14 @@
    "a": "A1",
    "b": "+Guard",
    "metric": "success",
-   "pairs": 24,
-   "families": 8,
-   "rate_a": 0.5,
-   "rate_b": 0.4583333333333333,
-   "diff": 0.041666666666666685,
+   "pairs": 63,
+   "families": 21,
+   "rate_a": 0.8095238095238095,
+   "rate_b": 0.7936507936507936,
+   "diff": 0.015873015873015928,
    "ci": [
     0.0,
-    0.125
+    0.04761904761904767
    ],
    "only_a": 1,
    "only_b": 0,
@@ -217,13 +226,13 @@
    "a": "+Gate",
    "b": "Full",
    "metric": "success",
-   "pairs": 24,
-   "families": 8,
-   "rate_a": 0.4583333333333333,
-   "rate_b": 0.5416666666666666,
-   "diff": -0.08333333333333331,
+   "pairs": 63,
+   "families": 21,
+   "rate_a": 0.7936507936507936,
+   "rate_b": 0.8253968253968254,
+   "diff": -0.031746031746031744,
    "ci": [
-    -0.20833333333333326,
+    -0.07936507936507942,
     0.0
    ],
    "only_a": 0,
@@ -237,14 +246,14 @@
    "a": "A1",
    "b": "+Gate",
    "metric": "success",
-   "pairs": 24,
-   "families": 8,
-   "rate_a": 0.5,
-   "rate_b": 0.4583333333333333,
-   "diff": 0.041666666666666685,
+   "pairs": 63,
+   "families": 21,
+   "rate_a": 0.8095238095238095,
+   "rate_b": 0.7936507936507936,
+   "diff": 0.015873015873015928,
    "ci": [
     0.0,
-    0.125
+    0.04761904761904767
    ],
    "only_a": 1,
    "only_b": 0,
@@ -257,13 +266,13 @@
    "a": "+Guard",
    "b": "Full",
    "metric": "success",
-   "pairs": 24,
-   "families": 8,
-   "rate_a": 0.4583333333333333,
-   "rate_b": 0.5416666666666666,
-   "diff": -0.08333333333333331,
+   "pairs": 63,
+   "families": 21,
+   "rate_a": 0.7936507936507936,
+   "rate_b": 0.8253968253968254,
+   "diff": -0.031746031746031744,
    "ci": [
-    -0.20833333333333326,
+    -0.07936507936507942,
     0.0
    ],
    "only_a": 0,
@@ -271,6 +280,248 @@
    "p": 0.5,
    "fam_only_a": 0,
    "fam_only_b": 1,
+   "p_family": 1.0
+  }
+ ],
+ "gates": [
+  {
+   "a": "+Gate_V0",
+   "b": "+Gate",
+   "metric": "escalated",
+   "pairs": 9,
+   "families": 3,
+   "rate_a": 0.8888888888888888,
+   "rate_b": 1.0,
+   "diff": -0.11111111111111116,
+   "ci": [
+    -0.33333333333333337,
+    0.0
+   ],
+   "only_a": 0,
+   "only_b": 1,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0
+  },
+  {
+   "a": "+Gate_V0",
+   "b": "+Gate",
+   "metric": "escalated",
+   "pairs": 42,
+   "families": 14,
+   "rate_a": 0.047619047619047616,
+   "rate_b": 0.0,
+   "diff": 0.047619047619047616,
+   "ci": [
+    0.0,
+    0.11904761904761904
+   ],
+   "only_a": 2,
+   "only_b": 0,
+   "p": 0.5,
+   "fam_only_a": 2,
+   "fam_only_b": 0,
+   "p_family": 0.5
+  },
+  {
+   "a": "+Gate_V0",
+   "b": "+Gate",
+   "metric": "harm",
+   "pairs": 30,
+   "families": 10,
+   "rate_a": 0.03333333333333333,
+   "rate_b": 0.06666666666666667,
+   "diff": -0.03333333333333333,
+   "ci": [
+    -0.1,
+    0.0
+   ],
+   "only_a": 1,
+   "only_b": 2,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0
+  },
+  {
+   "a": "+Gate_V0",
+   "b": "+Gate",
+   "metric": "success",
+   "pairs": 51,
+   "families": 17,
+   "rate_a": 0.8431372549019608,
+   "rate_b": 0.8627450980392157,
+   "diff": -0.019607843137254943,
+   "ci": [
+    -0.0980392156862745,
+    0.03921568627450989
+   ],
+   "only_a": 1,
+   "only_b": 2,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0
+  },
+  {
+   "a": "+Gate_V0",
+   "b": "A1",
+   "metric": "escalated",
+   "pairs": 9,
+   "families": 3,
+   "rate_a": 0.8888888888888888,
+   "rate_b": 1.0,
+   "diff": -0.11111111111111116,
+   "ci": [
+    -0.33333333333333337,
+    0.0
+   ],
+   "only_a": 0,
+   "only_b": 1,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0
+  },
+  {
+   "a": "+Gate_V0",
+   "b": "A1",
+   "metric": "escalated",
+   "pairs": 42,
+   "families": 14,
+   "rate_a": 0.047619047619047616,
+   "rate_b": 0.0,
+   "diff": 0.047619047619047616,
+   "ci": [
+    0.0,
+    0.11904761904761904
+   ],
+   "only_a": 2,
+   "only_b": 0,
+   "p": 0.5,
+   "fam_only_a": 2,
+   "fam_only_b": 0,
+   "p_family": 0.5
+  },
+  {
+   "a": "+Gate_V0",
+   "b": "A1",
+   "metric": "harm",
+   "pairs": 30,
+   "families": 10,
+   "rate_a": 0.03333333333333333,
+   "rate_b": 0.06666666666666667,
+   "diff": -0.03333333333333333,
+   "ci": [
+    -0.1,
+    0.0
+   ],
+   "only_a": 0,
+   "only_b": 1,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0
+  },
+  {
+   "a": "+Gate_V0",
+   "b": "A1",
+   "metric": "success",
+   "pairs": 51,
+   "families": 17,
+   "rate_a": 0.8431372549019608,
+   "rate_b": 0.8823529411764706,
+   "diff": -0.039215686274509776,
+   "ci": [
+    -0.0980392156862745,
+    0.0
+   ],
+   "only_a": 0,
+   "only_b": 2,
+   "p": 0.5,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0
+  },
+  {
+   "a": "+Gate",
+   "b": "A1",
+   "metric": "escalated",
+   "pairs": 9,
+   "families": 3,
+   "rate_a": 1.0,
+   "rate_b": 1.0,
+   "diff": 0.0,
+   "ci": [
+    0.0,
+    0.0
+   ],
+   "only_a": 0,
+   "only_b": 0,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0
+  },
+  {
+   "a": "+Gate",
+   "b": "A1",
+   "metric": "escalated",
+   "pairs": 48,
+   "families": 16,
+   "rate_a": 0.0,
+   "rate_b": 0.0,
+   "diff": 0.0,
+   "ci": [
+    0.0,
+    0.0
+   ],
+   "only_a": 0,
+   "only_b": 0,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0
+  },
+  {
+   "a": "+Gate",
+   "b": "A1",
+   "metric": "harm",
+   "pairs": 137,
+   "families": 46,
+   "rate_a": 0.014598540145985401,
+   "rate_b": 0.014598540145985401,
+   "diff": 0.0,
+   "ci": [
+    0.0,
+    0.0
+   ],
+   "only_a": 1,
+   "only_b": 1,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
+   "p_family": 1.0
+  },
+  {
+   "a": "+Gate",
+   "b": "A1",
+   "metric": "success",
+   "pairs": 63,
+   "families": 21,
+   "rate_a": 0.7936507936507936,
+   "rate_b": 0.8095238095238095,
+   "diff": -0.015873015873015928,
+   "ci": [
+    -0.04761904761904767,
+    0.0
+   ],
+   "only_a": 0,
+   "only_b": 1,
+   "p": 1.0,
+   "fam_only_a": 0,
+   "fam_only_b": 0,
    "p_family": 1.0
   }
  ]
