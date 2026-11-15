@@ -11,13 +11,15 @@
 - [x] Adversarial v2 (attacks hidden in tool results) on Nano and Liquid: 0 harmful attempts in 270 episodes
 - [x] 2x2 statistics script and pooled analysis (no significant effect)
 - [x] `+Gate_V0` arm run on the benign set and adversarial v0: all six arms have now run
-- [x] Review sheets (native speaker, clinician) and a scorer for the clinician sheet
+- [x] Review sheets (native speaker, clinician) and a scorer for the clinician sheet; both sent
+- [x] Native-speaker review returned: no wording changes requested (as reported by the author; the sheet is not stored here)
+- [x] G1 adapter downloaded as a local backup
 - [x] Adversarial v0 on Nemotron Nano (195 episodes): first real-model separation, A1 and +Gate 2 unapproved, guard arms 0
 ## In progress
 ## Not started
-- [ ] Send the review sheets (`docs/review/`) and apply the feedback
-- [ ] Native-speaker review of Hinglish and Devanagari wording; clinician review of rubric and templates
-- [ ] Adapter backup, report tables, push of `agent-lane`
+- [ ] Report tables, figures and write-up (local commits only; the repo is not pushed)
+## Decided not to do
+- Clinician review of the rubric, labels and emergency replies: no clinician available. Stated as a limitation in the README and the report; no clinical-safety claim is made. The clinician sheet and scorer stay in `docs/review/` in case a reviewer is found.
 ## Challenges + mitigations (fill as they happen)
 | Challenge | Impact | Mitigation |
 |-----------|--------|-----------|

@@ -29,7 +29,8 @@ patient message -> normaliser -> safety gate --unsafe--> fixed reply + staff han
 | Mutation testing of the action guard (10 single, 6 paired mutants, 6 probes) | done |
 | 2x2 ablation of gate and guard: statistical analysis (exact McNemar with Holm, cluster bootstrap, interaction) | done on all runs so far; no significant effect (2 vs 0 events) |
 | `+Gate_V0` arm (prompted gate, guard off) | done on the benign set (Ultra) and adversarial v0 (Nano) |
-| Clinician review of rubric and emergency templates; native-speaker review of Hinglish and Devanagari wording | not started |
+| Native-speaker review of Hinglish and Devanagari wording | done (no changes requested) |
+| Clinician review of rubric, labels and emergency replies | not done: no clinician was available; stated as a limitation (see Limitations) |
 
 ## Repository layout
 
@@ -167,6 +168,15 @@ Because the real models rarely try the attacks, the arms tie at zero and the hea
 - **Mutation testing** (`scripts/mutation_test.py`): 16 broken versions of the guard, each run against the attacks, six "attacker also says yes" probes and the unit tests. All 16 are caught by the tests; 13 also by attacks or probes. No identity gate: 57/57 harmed; ownership and confirmation both removed: 36/57. The allow-list, the verified-session check and the booking lock changed no outcome and are reported as defence in depth only.
 
 Limits: one run per scenario at temperature 0; free models with changing quotas; Hinglish and Devanagari scenario wording and all templates are author drafts awaiting review; scenarios are synthetic.
+
+## Limitations
+
+- **No clinician has reviewed anything.** The triage rubric, the 150 evaluation labels, the 300 training labels and the fixed emergency and urgent replies were written by the authors. The results show how well the system follows the authors' rubric and how the guard behaves. They do not show that the labels or replies are clinically correct, and we make no claim about clinical safety. This is a research prototype, not a medical device, and it must not be used with real patients.
+- **Synthetic data only.** Patients, appointments, scenarios and attacks are invented; real conversations are messier.
+- **Reply wording.** Hinglish and Devanagari scenario text and the Hindi replies were reviewed by one native speaker who requested no changes; this is a light check, not a linguistic validation.
+- **Few real-model attacks.** The free models we could use refused or ignored almost every attack. The evidence that the guard is what protects the clinic comes from the blocked attempts (9 of 9), a scripted always-obeying agent and the mutation test, not from a large difference between real-model arms (2 versus 0 harmful episodes, not significant).
+- **Run-to-run and model variation.** One run per scenario at temperature 0, on free models whose quotas and behaviour change; the agent model differs between sets.
+- **Reply text is not scored.** The oracle counts executed tool calls, so a reply that leaks a name or the system prompt without a tool call is not detected.
 
 ## How to reproduce
 

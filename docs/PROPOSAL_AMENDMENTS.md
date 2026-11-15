@@ -83,3 +83,13 @@ date or a time). EMERGENCY and URGENT are never overridden.
 - Limits: the intent lexicon was extended after seeing the probe messages, so the 5% is optimistic; the probe wording is
   the author's draft and needs a native-speaker read; the alternative, retraining G1 with administrative examples, is
   not done.
+
+## 5. Clinician review was not done
+
+**What changed.** The proposal lists a clinician review of the triage rubric and the emergency templates. No clinician was available, so it was not done.
+
+**Edits to the proposal text.**
+
+- Limitations: "The triage rubric, the evaluation and training labels and the fixed emergency and urgent replies were written by the authors and have not been reviewed by a clinician. The results measure how well the system follows the authors' rubric and how the guard behaves; they do not show that the labels or replies are clinically correct, and no claim is made about clinical safety. The system is a research prototype, not a medical device."
+- Any sentence that calls the rubric, the labels or the templates validated, clinically reviewed or safe should be removed or reworded to "author-defined".
+- Future work: "Clinician review of the rubric, the labels and the emergency replies" (a blind label sample and a scorer already exist in `docs/review/`).
